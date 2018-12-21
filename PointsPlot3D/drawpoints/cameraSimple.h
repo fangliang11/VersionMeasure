@@ -7,9 +7,9 @@
 // 3D model is converted by the PolyTrans from Okino Computer Graphics, Inc.
 // Bounding box of geometry = (-0.5,-0.35,-0.3) to (0.5,0.37,0.3).
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2008-09-18
-// UPDATED: 2018-03-02
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef CAMERA_SIMPLE_H

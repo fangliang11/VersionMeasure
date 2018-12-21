@@ -3,9 +3,9 @@
 // ========
 // View component of OpenGL window
 //openGL窗口的视图组件
-//  AUTHORL Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2008-09-15
-// UPDATED: 2018-03-01
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef VIEW_GL_H

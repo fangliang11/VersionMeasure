@@ -16,9 +16,9 @@
 // SysLink      : <a> markup control, required comctl32.dll
 // Picture      : static bitmap control, SS_BITMAP
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2005-03-28
-// UPDATED: 2017-10-30
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef WIN_CONTROLS_H

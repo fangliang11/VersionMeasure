@@ -1,3 +1,14 @@
+///////////////////////////////////////////////////////////////////////////////
+// ReadData.cpp
+// ===========
+//read data file of .txt/.dat , and convert data into vector coordinate
+//also do some compute to make the coordinate display in the 3D coordinate
+//
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
+///////////////////////////////////////////////////////////////////////////////
+
 #include <Windows.h>
 #include <fstream>
 #include <sstream>

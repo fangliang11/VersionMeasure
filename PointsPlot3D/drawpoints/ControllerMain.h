@@ -3,9 +3,9 @@
 // ================
 // Derived Controller class for main window
 //派生控制类，主窗口
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2006-07-09
-// UPDATED: 2013-03-17
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef WIN_CONTROLLER_MAIN_H

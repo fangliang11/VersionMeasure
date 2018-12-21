@@ -9,9 +9,9 @@
 // When this class is constructed, it gets the pointers to model and view
 // components.
 //当这个类建立时，会获取模型和视图组件的指针
-//  AUTHOR: Song Ho Ahn (song.ahn@gamil.com)
-// CREATED: 2008-09-15
-// UPDATED: 2017-10-18
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef WIN_CONTROLLER_GL_H

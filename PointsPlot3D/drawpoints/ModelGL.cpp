@@ -4,9 +4,9 @@
 // Model component of OpenGL
 // All OpenGL calls should be here.
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2008-09-15
-// UPDATED: 2018-06-07
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifdef _WIN32
@@ -161,8 +161,6 @@ void ModelGL::init()
     //glClearStencil(0);                              // clear stencil buffer
     //glClearDepth(1.0f);                             // 0 is near, 1 is far
     //glDepthFunc(GL_LEQUAL);
-
-	//myControllerFormGL.readData("D:\\MYdata1.dat");  //此处为初始化时候加载坐标数据
 
     //initLights();
 }
@@ -428,7 +426,7 @@ void ModelGL::drawSub1()
     // before drawing the object:
     // ModelView_M = View_M * Model_M
     // This modelview matrix transforms the objects from object space to eye space.
-    glLoadMatrixf(matrixModelView.get());
+    //glLoadMatrixf(matrixModelView.get());
 
     // draw a teapot and axis after ModelView transform
     // v' = Mmv * v
@@ -442,7 +440,7 @@ void ModelGL::drawSub1()
         //drawTeapot();
 
 		GLUquadricObj *objCylinder = gluNewQuadric(); //创建二次曲面对象——-圆柱
-		glTranslatef(2.0, 2.0, 2.0);
+		glTranslatef(0.0, 0.0, 0.0);
 		//glRotatef(60, 0.0, 0.0, 1.0);
 		gluCylinder(objCylinder, 1.0, 0.5, 3, 10, 5);
 
@@ -452,7 +450,7 @@ void ModelGL::drawSub1()
     else
     {
         // use fixed pipeline
-        drawTeapot();
+        //drawTeapot();
     }
 
     glPopMatrix();
@@ -511,7 +509,7 @@ void ModelGL::drawSub2()
         //glDisable(GL_COLOR_MATERIAL);
 
 		if (CTRDRAWFLAG ) {
-			glColor3f(0.0f, 1.0f, 1.0f); //蓝色
+			glColor3f(0.0f, 0.0f, 1.0f); //蓝色
 			drawPoints(3);   //增加点云
 		}
 

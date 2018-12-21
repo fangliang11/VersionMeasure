@@ -11,11 +11,9 @@
 //
 // Dependencies: Vector2, Vector3, Vector3
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2005-06-24
-// UPDATED: 2016-07-07
-//
-// Copyright (C) 2005 Song Ho Ahn
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef MATH_MATRICES_H

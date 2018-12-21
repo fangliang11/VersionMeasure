@@ -5,9 +5,9 @@
 // It also converts any number to char or wchar_t format. For example,
 // toWchar(1) converts the number 1 to a wchar_t string, L"1".
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2006-07-14
-// UPDATED: 2016-07-21
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef WCHAR_UTIL_H

@@ -12,9 +12,9 @@
 // This class does not handle any message here, therefore the client must
 // create a derived class and handle the specific messages.
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2005-03-31
-// UPDATED: 2013-12-12
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef WIN_CONTROLLER_H

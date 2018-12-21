@@ -4,9 +4,9 @@
 // Model component of OpenGL模型构建
 // All OpenGL calls should be here.
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2008-09-15
-// UPDATED: 2018-06-07
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef MODEL_GL_H
@@ -87,17 +87,12 @@ public:
 
     bool isShaderSupported()            { return glslSupported; }
 
-	//void drawSub1();                                // draw upper window
-	//void drawSub2();                                // draw bottom window
-	//bool createShaderPrograms();
 	vector<float> modelCoordinateX;
 	vector<float> modelCoordinateY;
 	vector<float> modelCoordinateZ;
 	int modelROWNUM;
 
 	bool CTRDRAWFLAG = false;                               // opengl重绘标志位
-	int THREADCLOSEFLAG = 2;                           // opengl线程结束标志位
-	GLdouble  top;
 
 protected:
 

@@ -4,9 +4,9 @@
 // A class of Dialog Box for MS Windows
 // It creates a dialog box with CreateDialogParam() API call.
 //创建对话框
-//  AUTHOR: Song Ho Ahn
-// CREATED: 2005-03-16
-// UPDATED: 2006-06-20
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef WIN_DIALOG_WINDOW_H

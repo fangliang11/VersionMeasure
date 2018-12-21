@@ -3,9 +3,9 @@
 // ==========
 // View component of OpenGL window
 //
-//  AUTHORL Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2006-07-10
-// UPDATED: 2018-06-07
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #define WIN32_LEAN_AND_MEAN 1

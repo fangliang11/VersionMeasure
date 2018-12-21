@@ -5,9 +5,9 @@
 // It registers window class(WNDCLASSEX) with RegisterClassEx() and creates a 
 // window with CreateWindowEx() API call.
 //
-//  AUTHOR: Song Ho Ahn
-// CREATED: 2005-03-16
-// UPDATED: 2013-01-10
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #pragma warning(disable : 4996)

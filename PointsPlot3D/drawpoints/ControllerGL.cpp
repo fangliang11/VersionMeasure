@@ -8,9 +8,9 @@
 // When this class is constructed, it gets the pointers to model and view
 // components.
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gamil.com)
-// CREATED: 2008-09-15
-// UPDATED: 2018-03-01
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -66,7 +66,6 @@ int ControllerGL::create()
     }
 
     // create a thread for OpenGL rendering
-    //glThread = std::thread(&ControllerGL::runThread, CTRDRAWFLAG, THREADCLOSEFLAG, this);  //创建openGL线程
 	glThread = std::thread(&ControllerGL::runThread, this);  //创建openGL线程
     
     loopFlag = true;
@@ -81,18 +80,6 @@ int ControllerGL::create()
 ///////////////////////////////////////////////////////////////////////////////
 int ControllerGL::paint()
 {
-	//Win::ViewFormGL viewFormGL(model);
-	//Win::ControllerFormGL myControllerFormGL(model, &viewFormGL);
-
-	//model->modelCoordinateX = myControllerFormGL.coordinateX;
-	//model->modelCoordinateY = myControllerFormGL.coordinateY;
-	//model->modelCoordinateZ = myControllerFormGL.coordinateZ;
-	//model->modelROWNUM = myControllerFormGL.ROWNUM;
-
-
-	model->top = 3;
-
-
 	return 0;
 }
 
@@ -161,9 +148,6 @@ int ControllerGL::lButtonDown(WPARAM state, int x, int y)
     // set focus to receive wm_mousewheel event
     ::SetFocus(handle);
 
-	//model->CTRDRAWFLAG = false;
-	//MessageBox(NULL, TEXT("lButtonDown函数"), TEXT("消息响应"), 0);
-
     return 0;
 }
 
@@ -173,9 +157,6 @@ int ControllerGL::lButtonDown(WPARAM state, int x, int y)
 
 int ControllerGL::mButtonDown(WPARAM state, int x, int y)  
 {
-	model->top = 5;
-
-
 	return 0;
 }
 

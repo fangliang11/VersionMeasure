@@ -15,9 +15,9 @@
 // The dialog window cannot be closed by user once it is created. But it will be
 // destroyed when the application terminated.
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2006-07-14
-// UPDATED: 2006-07-24
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef WIN_LOG_H

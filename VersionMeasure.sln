@@ -5,22 +5,46 @@ VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PointsPlot3D", "PointsPlot3D\PointsPlot3D.vcxproj", "{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PointsPlot3d-1.0-32", "PointsPlot3d-1.0-32\PointsPlot3d-1.0-32.vdproj", "{C003F6FB-AD5A-43B6-AD59-DE46EC4317CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Debug|Win32.Build.0 = Debug|Win32
 		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Debug|x64.ActiveCfg = Debug|x64
 		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Debug|x64.Build.0 = Debug|x64
 		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Debug|x86.ActiveCfg = Debug|Win32
 		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Debug|x86.Build.0 = Debug|Win32
+		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Release|Any CPU.ActiveCfg = Release|Win32
+		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Release|Win32.ActiveCfg = Release|Win32
+		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Release|Win32.Build.0 = Release|Win32
 		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Release|x64.ActiveCfg = Release|x64
 		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Release|x64.Build.0 = Release|x64
 		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Release|x86.ActiveCfg = Release|Win32
 		{FF35FE2D-F729-4DF4-9A40-37407E13F4E0}.Release|x86.Build.0 = Release|Win32
+		{C003F6FB-AD5A-43B6-AD59-DE46EC4317CD}.Debug|Any CPU.ActiveCfg = Debug
+		{C003F6FB-AD5A-43B6-AD59-DE46EC4317CD}.Debug|Any CPU.Build.0 = Debug
+		{C003F6FB-AD5A-43B6-AD59-DE46EC4317CD}.Debug|Win32.ActiveCfg = Debug
+		{C003F6FB-AD5A-43B6-AD59-DE46EC4317CD}.Debug|Win32.Build.0 = Debug
+		{C003F6FB-AD5A-43B6-AD59-DE46EC4317CD}.Debug|x64.ActiveCfg = Debug
+		{C003F6FB-AD5A-43B6-AD59-DE46EC4317CD}.Debug|x86.ActiveCfg = Debug
+		{C003F6FB-AD5A-43B6-AD59-DE46EC4317CD}.Release|Any CPU.ActiveCfg = Release
+		{C003F6FB-AD5A-43B6-AD59-DE46EC4317CD}.Release|Any CPU.Build.0 = Release
+		{C003F6FB-AD5A-43B6-AD59-DE46EC4317CD}.Release|Win32.ActiveCfg = Release
+		{C003F6FB-AD5A-43B6-AD59-DE46EC4317CD}.Release|Win32.Build.0 = Release
+		{C003F6FB-AD5A-43B6-AD59-DE46EC4317CD}.Release|x64.ActiveCfg = Release
+		{C003F6FB-AD5A-43B6-AD59-DE46EC4317CD}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

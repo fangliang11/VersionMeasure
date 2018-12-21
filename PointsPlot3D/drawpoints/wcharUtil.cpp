@@ -3,9 +3,9 @@
 // =============
 // conversion utility between multi-byte char and wide char
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2006-07-14
-// UPDATED: 2016-07-21
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #pragma warning(disable : 4996)

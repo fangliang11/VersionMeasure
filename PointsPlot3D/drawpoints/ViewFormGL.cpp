@@ -3,9 +3,9 @@
 // ==============
 // View component of OpenGL dialog window
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2008-09-15
-// UPDATED: 2018-04-13
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <string>
@@ -267,7 +267,7 @@ string ViewFormGL::getEditText() {
 void ViewFormGL::updateTrackbars(HWND handle, int position)
 {
     int value;
-    if(handle == sliderViewPosX.getHandle())
+    if(handle == sliderViewPosX.getHandle())   // 视图视角改变滑动条
     {
         value = position - SLIDER_POS_SHIFT;
         sliderViewPosX.setPos(position);
@@ -309,7 +309,7 @@ void ViewFormGL::updateTrackbars(HWND handle, int position)
         textViewRotZ.setText(toWchar(value));
         model->setCameraAngleZ((float)value);
     }
-    else if(handle == sliderModelPosX.getHandle())
+    else if(handle == sliderModelPosX.getHandle())  // 模型视角改变滑动条
     {
         value = position - SLIDER_POS_SHIFT;
         sliderModelPosX.setPos(position);

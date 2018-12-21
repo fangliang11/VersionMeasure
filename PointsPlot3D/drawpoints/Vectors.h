@@ -3,9 +3,9 @@
 // =========
 // 2D/3D/4D vectors
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2007-02-14
-// UPDATED: 2016-04-04
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 //
 // Copyright (C) 2007-2016 Song Ho Ahn
 ///////////////////////////////////////////////////////////////////////////////

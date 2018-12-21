@@ -12,9 +12,9 @@
 // This class does not handle any message here, therefore the client must
 // create a derived class and handle the messages.
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2005-03-31
-// UPDATED: 2013-03-15
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "Controller.h"

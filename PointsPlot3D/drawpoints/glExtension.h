@@ -22,9 +22,9 @@
 // WGL_ARB_create_context
 // WGL_EXT_swap_control
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2013-03-05
-// UPDATED: 2018-06-07
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef GL_EXTENSION_H

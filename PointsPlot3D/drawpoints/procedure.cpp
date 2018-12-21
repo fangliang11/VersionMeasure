@@ -5,9 +5,9 @@
 // Windows will call this function whenever an event is triggered. It routes
 // the message to the controller associated with window handle.
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2006-06-24
-// UPDATED: 2017-10-24
+//  AUTHOR: Fang Liang (fangliang1313@gmail.com)
+// CREATED: 2018-12-20
+// UPDATED: 2018-12-20
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "procedure.h"
