@@ -1,0 +1,304 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体，中国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_FORMVIEW DIALOGEX 0, 0, 717, 165
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "平面视图",IDC_STATIC,6,7,174,149
+    GROUPBOX        "    ModelView Matrix    ",IDC_STATIC,607,6,102,84,BS_CENTER
+    RTEXT           "1",IDC_M_MV_0,608,18,23,8
+    RTEXT           "0",IDC_M_MV_1,608,36,23,8
+    RTEXT           "0",IDC_M_MV_2,608,54,23,8
+    RTEXT           "0",IDC_M_MV_3,608,72,23,8
+    RTEXT           "0",IDC_M_MV_4,631,18,23,8
+    RTEXT           "1",IDC_M_MV_5,631,36,23,8
+    RTEXT           "0",IDC_M_MV_6,631,54,23,8
+    RTEXT           "0",IDC_M_MV_7,631,72,23,8
+    RTEXT           "0",IDC_M_MV_8,655,18,23,8
+    RTEXT           "0",IDC_M_MV_9,655,36,23,8
+    RTEXT           "1",IDC_M_MV_10,655,54,23,8
+    RTEXT           "0",IDC_M_MV_11,655,72,23,8
+    RTEXT           "0",IDC_M_MV_12,679,18,23,8
+    RTEXT           "0",IDC_M_MV_13,679,36,23,8
+    RTEXT           "0",IDC_M_MV_14,679,54,23,8
+    RTEXT           "1",IDC_M_MV_15,679,72,23,8
+    CONTROL         "",IDC_STATIC,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,618,85,78,8
+    LTEXT           "平移",IDC_STATIC,16,40,17,8
+    RTEXT           "朝向 (Y)",IDC_STATIC,12,100,42,8
+    RTEXT           "倾斜 (X)",IDC_STATIC,18,82,36,8
+    PUSHBUTTON      "重置视图",IDC_BUTTON_VIEW_RESET,60,138,90,14
+    LTEXT           "平移",IDC_STATIC,196,40,32,8
+    LTEXT           "旋转",IDC_STATIC,196,100,17,8
+    RTEXT           "X",IDC_STATIC,223,22,12,8
+    RTEXT           "Y",IDC_STATIC,223,40,12,8
+    RTEXT           "Z",IDC_STATIC,223,58,12,8
+    RTEXT           "X",IDC_STATIC,223,82,12,8
+    RTEXT           "Y",IDC_STATIC,223,100,12,8
+    RTEXT           "Z",IDC_STATIC,223,118,12,8
+    PUSHBUTTON      "重置模型",IDC_BUTTON_MODEL_RESET,240,138,89,14
+    RTEXT           "X",IDC_STATIC,42,22,12,8
+    RTEXT           "Y",IDC_STATIC,42,40,12,8
+    RTEXT           "Z",IDC_STATIC,42,58,12,8
+    RTEXT           "翻转 (Z)",IDC_STATIC,12,118,42,8
+    CONTROL         "",IDC_SLIDER_VIEW_PX,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,54,18,102,15
+    CONTROL         "",IDC_SLIDER_VIEW_PY,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,54,36,102,15
+    CONTROL         "",IDC_SLIDER_VIEW_PZ,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,54,54,102,15
+    CONTROL         "",IDC_SLIDER_VIEW_RX,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,54,78,102,15
+    CONTROL         "",IDC_SLIDER_VIEW_RY,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,54,96,102,15
+    CONTROL         "",IDC_SLIDER_VIEW_RZ,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,54,114,102,15
+    LTEXT           "-10",IDC_LABEL_VIEW_PX,157,22,18,8
+    LTEXT           "-10",IDC_LABEL_VIEW_PY,157,40,18,8
+    LTEXT           "-10",IDC_LABEL_VIEW_PZ,157,58,18,8
+    LTEXT           "-180",IDC_LABEL_VIEW_RX,157,82,18,8
+    LTEXT           "-180",IDC_LABEL_VIEW_RY,157,100,18,8
+    LTEXT           "-180",IDC_LABEL_VIEW_RZ,157,118,18,8
+    CONTROL         "",IDC_SLIDER_MODEL_PX,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,235,18,101,15
+    CONTROL         "",IDC_SLIDER_MODEL_PY,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,235,36,101,15
+    CONTROL         "",IDC_SLIDER_MODEL_PZ,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,235,54,101,15
+    CONTROL         "",IDC_SLIDER_MODEL_RX,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,235,78,101,15
+    CONTROL         "",IDC_SLIDER_MODEL_RY,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,235,96,101,15
+    CONTROL         "",IDC_SLIDER_MODEL_RZ,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,235,114,101,15
+    GROUPBOX        "三维模型",IDC_STATIC,186,6,174,150
+    LTEXT           "-10",IDC_LABEL_MODEL_PX,337,22,18,8
+    LTEXT           "-10",IDC_LABEL_MODEL_PY,337,40,19,8
+    LTEXT           "-10",IDC_LABEL_MODEL_PZ,337,58,19,8
+    LTEXT           "-180",IDC_LABEL_MODEL_RX,337,82,19,8
+    LTEXT           "-180",IDC_LABEL_MODEL_RY,337,100,19,8
+    LTEXT           "-180",IDC_LABEL_MODEL_RZ,337,118,19,8
+    COMBOBOX        IDC_COMBO_X,395,60,29,98,CBS_DROPDOWN | CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_COMBO_Y,474,60,29,98,CBS_DROPDOWN | CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,WS_EX_CLIENTEDGE
+    PUSHBUTTON      "帮助",IDC_BUTTON_ABOUT,655,135,55,23
+    LTEXT           "数据文件",IDC_STATIC,369,24,33,8
+    LTEXT           "X轴坐标",IDC_STATIC,396,46,29,8
+    LTEXT           "Y轴坐标",IDC_STATIC,474,47,29,8
+    LTEXT           "Z轴坐标",IDC_STATIC,548,47,29,8
+    COMBOBOX        IDC_COMBO_Z,549,60,29,99,CBS_DROPDOWN | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP,WS_EX_CLIENTEDGE
+    EDITTEXT        IDC_EDIT_FILENAME,402,21,126,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "打开",IDC_BUTTON_OPEN,531,21,31,14
+    PUSHBUTTON      "重绘",IDC_BUTTON_DRAW,572,21,32,14
+    LTEXT           "第",IDC_STATIC,386,62,9,8
+    LTEXT           "列",IDC_STATIC,428,62,9,8
+    LTEXT           "第",IDC_STATIC,464,62,9,8
+    LTEXT           "列",IDC_STATIC,506,63,9,8
+    LTEXT           "第",IDC_STATIC,540,62,9,8
+    LTEXT           "列",IDC_STATIC,581,62,9,8
+END
+
+IDD_ABOUT DIALOGEX 0, 0, 299, 150
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION
+CAPTION "Help"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDC_OK,242,129,50,14
+    CONTROL         "三维点云图显示程序\n\n在显示区域按住鼠标左键旋转，右键缩放，中键清除。\n默认选择3，4，5列",IDC_SYSLINK1,
+                    "SysLink",WS_TABSTOP,7,13,196,33
+    LTEXT           "编制: 房亮\n单位: 浙江清华柔性电子技术研究院\n时间: 2018-12-20\n邮箱: fangliang1313@gmail.com",IDC_STATIC,7,90,125,46
+    CONTROL         IDB_BITMAP1,IDC_STATIC,"Static",SS_BITMAP,212,7,80,74
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_FORMVIEW, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 710
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 158
+    END
+
+    IDD_ABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 292
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 143
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_FORMVIEW AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ABOUT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_FORMVIEW DLGINIT
+BEGIN
+    IDC_COMBO_X, 0x403, 2, 0
+0x0031, 
+    IDC_COMBO_X, 0x403, 2, 0
+0x0032, 
+    IDC_COMBO_X, 0x403, 2, 0
+0x0033, 
+    IDC_COMBO_X, 0x403, 2, 0
+0x0034, 
+    IDC_COMBO_X, 0x403, 2, 0
+0x0035, 
+    IDC_COMBO_X, 0x403, 2, 0
+0x0036, 
+    IDC_COMBO_X, 0x403, 2, 0
+0x0037, 
+    IDC_COMBO_X, 0x403, 2, 0
+0x0038, 
+    IDC_COMBO_X, 0x403, 2, 0
+0x0039, 
+    IDC_COMBO_X, 0x403, 3, 0
+0x3031, "\000" 
+    IDC_COMBO_X, 0x403, 3, 0
+0x3131, "\000" 
+    IDC_COMBO_X, 0x403, 3, 0
+0x3231, "\000" 
+    IDC_COMBO_X, 0x403, 3, 0
+0x3331, "\000" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU MENU
+BEGIN
+    POPUP "文件"
+    BEGIN
+        MENUITEM "打开",                          IDM_OPEN
+        MENUITEM "保存",                          IDM_SAVE
+        MENUITEM "关闭",                          IDM_CLOSE
+    END
+    POPUP "二维图形"
+    BEGIN
+        MENUITEM "颜色",                          ID_40008
+        MENUITEM "坐标轴",                         ID_40009
+    END
+    MENUITEM "三维图形",                        ID_40013
+    POPUP "帮助"
+    BEGIN
+        MENUITEM "使用帮助",                        ID_40006
+        MENUITEM "关于",                          ID_40007
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_Win32OpenGL         ICON                    "Win32OpenGL.ico"
+
+IDI_ifts                ICON                    "D:\\Users\\fang\\Source\\Repos\\WindowsProject1\\matrixModelView1204\\src\\iftsbig.ico"
+
+IDI_IFTSSMALL           ICON                    "iftssmall.ico"
+
+IDI_ICON4               ICON                    "iftsbig.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP1             BITMAP                  "iftslogo.bmp"
+
+#endif    // 中文(简体，中国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 英语(美国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // 英语(美国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

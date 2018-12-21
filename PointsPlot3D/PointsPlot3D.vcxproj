@@ -29,7 +29,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -74,8 +74,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
+      <SDLCheck>
+      </SDLCheck>
+      <ConformanceMode>false</ConformanceMode>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -115,6 +118,54 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="drawpoints\cameraSimple.h" />
+    <ClInclude Include="drawpoints\Controller.h" />
+    <ClInclude Include="drawpoints\ControllerFormGL.h" />
+    <ClInclude Include="drawpoints\ControllerGL.h" />
+    <ClInclude Include="drawpoints\ControllerMain.h" />
+    <ClInclude Include="drawpoints\Controls.h" />
+    <ClInclude Include="drawpoints\DialogWindow.h" />
+    <ClInclude Include="drawpoints\glext.h" />
+    <ClInclude Include="drawpoints\glExtension.h" />
+    <ClInclude Include="drawpoints\Log.h" />
+    <ClInclude Include="drawpoints\logResource.h" />
+    <ClInclude Include="drawpoints\Matrices.h" />
+    <ClInclude Include="drawpoints\ModelGL.h" />
+    <ClInclude Include="drawpoints\procedure.h" />
+    <ClInclude Include="drawpoints\ReadData.h" />
+    <ClInclude Include="drawpoints\resource.h" />
+    <ClInclude Include="drawpoints\teapot.h" />
+    <ClInclude Include="drawpoints\Vectors.h" />
+    <ClInclude Include="drawpoints\ViewFormGL.h" />
+    <ClInclude Include="drawpoints\ViewGL.h" />
+    <ClInclude Include="drawpoints\wcharUtil.h" />
+    <ClInclude Include="drawpoints\wglext.h" />
+    <ClInclude Include="drawpoints\Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="drawpoints\Controller.cpp" />
+    <ClCompile Include="drawpoints\ControllerFormGL.cpp" />
+    <ClCompile Include="drawpoints\ControllerGL.cpp" />
+    <ClCompile Include="drawpoints\ControllerMain.cpp" />
+    <ClCompile Include="drawpoints\DialogWindow.cpp" />
+    <ClCompile Include="drawpoints\glExtension.cpp" />
+    <ClCompile Include="drawpoints\Log.cpp" />
+    <ClCompile Include="drawpoints\main.cpp" />
+    <ClCompile Include="drawpoints\Matrices.cpp" />
+    <ClCompile Include="drawpoints\ModelGL.cpp" />
+    <ClCompile Include="drawpoints\procedure.cpp" />
+    <ClCompile Include="drawpoints\ReadData.cpp" />
+    <ClCompile Include="drawpoints\ViewFormGL.cpp" />
+    <ClCompile Include="drawpoints\ViewGL.cpp" />
+    <ClCompile Include="drawpoints\wcharUtil.cpp" />
+    <ClCompile Include="drawpoints\Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="drawpoints\log.rc" />
+    <ResourceCompile Include="drawpoints\matrixModelView.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="drawpoints\PointsPlot3D.exe.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

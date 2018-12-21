@@ -14,4 +14,136 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="drawpoints\cameraSimple.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\Controller.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\ControllerFormGL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\ControllerGL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\ControllerMain.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\Controls.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\DialogWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\glext.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\glExtension.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\Log.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\logResource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\Matrices.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\ModelGL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\procedure.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\ReadData.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\teapot.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\Vectors.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\ViewFormGL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\ViewGL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\wcharUtil.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\wglext.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpoints\Window.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="drawpoints\Controller.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\ControllerFormGL.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\ControllerGL.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\ControllerMain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\DialogWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\glExtension.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\Log.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\Matrices.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\ModelGL.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\procedure.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\ReadData.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\ViewFormGL.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\ViewGL.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\wcharUtil.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawpoints\Window.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="drawpoints\log.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="drawpoints\matrixModelView.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="drawpoints\PointsPlot3D.exe.manifest" />
+  </ItemGroup>
 </Project>
