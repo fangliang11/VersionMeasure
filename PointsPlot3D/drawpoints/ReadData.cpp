@@ -24,7 +24,7 @@ ReadData::~ReadData() {
 
 }
 
-string ReadData::selectFile() {
+wstring ReadData::selectFile() {
 
 	OPENFILENAME ofn = { 0 };
 	TCHAR strFilename[MAX_PATH] = { 0 };//用于接收文件名
@@ -43,7 +43,7 @@ string ReadData::selectFile() {
 	if (GetOpenFileName(&ofn))
 	{
 		SELECTFINISHFLAG = true;
-		//MessageBox(NULL, strFilename, TEXT("已选择数据"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
+		MessageBox(NULL, strFilename, TEXT("已选择数据"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
 	}
 
 	TCHAR *tchar = strFilename;  // TCHAR型转成 string 型
@@ -56,7 +56,7 @@ string ReadData::selectFile() {
 	//freopen("CONIN$", "r+t", stdin);
 	//printf("%s\n", str.c_str());
 
-	return str;
+	return ws;
 }
 
 void ReadData::show(string selectfilename) {

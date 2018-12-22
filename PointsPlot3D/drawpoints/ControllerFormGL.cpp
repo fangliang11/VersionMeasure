@@ -74,6 +74,7 @@ int ControllerFormGL::create()
 ReadData myData;
 string filename;
 string selectname;
+wstring selectfilename;
 int numX=3, numY=4, numZ=5;  //ViewFormGL 中也有初始化的combobo列选择设置
 
 int ControllerFormGL::command(int id, int command, LPARAM msg)
@@ -108,9 +109,9 @@ int ControllerFormGL::command(int id, int command, LPARAM msg)
 		if (command == BN_CLICKED)   //打开文件按钮
 		{
 			//打开数据文件
-			selectname = myData.selectFile();
+			selectfilename = myData.selectFile();
 			model->CTRDRAWFLAG = false; //绘图重置
-			view->setEditText(selectname);
+			view->setEditText(selectfilename);
 
 			SELECTFINISHFLAG = true;
 		}

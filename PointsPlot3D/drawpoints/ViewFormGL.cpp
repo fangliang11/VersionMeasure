@@ -241,7 +241,7 @@ int ViewFormGL::getComboSelect(int ComboBoxID) {
 ///////////////////////////////////////////////////////////////////////////////
 // 设置文本编辑框内容
 ///////////////////////////////////////////////////////////////////////////////
-void ViewFormGL::setEditText(string filename) {
+void ViewFormGL::setEditText(wstring filename) {
 
 	std::wstring widestr = std::wstring(filename.begin(), filename.end());  //  string 转 wchar_t
 	const wchar_t* widecstr = widestr.c_str();
@@ -254,24 +254,23 @@ void ViewFormGL::setEditText(string filename) {
 ///////////////////////////////////////////////////////////////////////////////
 string ViewFormGL::getEditText(HWND handle) {
 
-	TCHAR tcharname[128]; //结果
+	TCHAR tcharname[128]; 
 	GetWindowText(GetDlgItem(handle, IDC_EDIT_FILENAME), tcharname, 128);
 	TCHAR *tchar = tcharname;  // TCHAR型转成 string 型
 	wstring ws(tchar);
-	string str(ws.begin(), ws.end());
+	//string str(ws.begin(), ws.end());
 
+	std::string strLocale = setlocale(LC_ALL, "");   //  wstring  to   string
+	const wchar_t* wchSrc = ws.c_str();
+	size_t nDestSize = wcstombs(NULL, wchSrc, 0) + 1;
+	char *chDest = new char[nDestSize];
+	memset(chDest, 0, nDestSize);
+	wcstombs(chDest, wchSrc, nDestSize);
+	std::string strResult = chDest;
+	delete[]chDest;
+	setlocale(LC_ALL, strLocale.c_str());
 
-
-	//int length;
-	//length = editboxFileName.getTextLength();
-
-	//wchar_t* widecstr = 0;
-	//editboxFileName.getText(widecstr, length);
-
-	//wstring ws(widecstr);                          // wchar_t  转  string
-	//string filename(ws.begin(), ws.end());
-
-	return str;
+	return strResult;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

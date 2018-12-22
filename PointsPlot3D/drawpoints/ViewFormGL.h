@@ -31,7 +31,7 @@ namespace Win
         void setModelMatrix(float x, float y, float z, float rx, float ry, float rz);  //…Ë÷√ƒ£–Õæÿ’Û
         void updateMatrices();
 		int getComboSelect(int ComboBoxID);
-		void setEditText(string filename);
+		void setEditText(wstring filename);
 		string getEditText(HWND handle);
 		
     protected:
