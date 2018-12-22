@@ -121,8 +121,11 @@
 #define IDC_EDIT_FILENAME               1128
 #define IDC_BUTTON_OPEN                 1129
 #define IDC_BUTTON_DRAW                 1130
-#define IDC_COMBO4                      1132
-#define IDC_COMBO_TEST                  1132
+#define IDC_RADIO_SETCAMERA             1133
+#define IDC_RADIO_HIDECAMERA            1134
+#define IDC_COMBO_COLOR                 1135
+#define IDC_COMBO4                      1136
+#define IDC_COMBO_BACKCOLOR             1136
 #define ID_40003                        40003
 #define ID_40004                        40004
 #define ID_40005                        40005
@@ -144,7 +147,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        131
 #define _APS_NEXT_COMMAND_VALUE         40018
-#define _APS_NEXT_CONTROL_VALUE         1133
+#define _APS_NEXT_CONTROL_VALUE         1137
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

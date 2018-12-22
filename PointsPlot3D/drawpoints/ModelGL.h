@@ -87,12 +87,13 @@ public:
 
     bool isShaderSupported()            { return glslSupported; }
 
-	vector<float> modelCoordinateX;
+	vector<float> modelCoordinateX;  //  点云图 点 的坐标
 	vector<float> modelCoordinateY;
 	vector<float> modelCoordinateZ;
-	int modelROWNUM;
+	int modelROWNUM;   //点数据的 行数
 
-	bool CTRDRAWFLAG = false;                               // opengl重绘标志位
+	bool CTRDRAWFLAG = false;  // opengl重绘标志位
+	bool CAMERAFLAG = true;  // 显示/隐藏相机
 
 protected:
 

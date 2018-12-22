@@ -138,9 +138,13 @@ void ViewFormGL::initControls(HWND handle)
 	comboboxCoordinateX.set(handle, IDC_COMBO_X);
 	comboboxCoordinateY.set(handle, IDC_COMBO_Y);
 	comboboxCoordinateZ.set(handle, IDC_COMBO_Z);
+	comboboxColor.set(handle, IDC_COMBO_COLOR);
+	comboboxBackColor.set(handle, IDC_COMBO_BACKCOLOR);
+	setCamera.set(handle, IDC_RADIO_SETCAMERA);
+	hideCamera.set(handle, IDC_RADIO_HIDECAMERA);
 
 	string strTemp[] = {"X", "Y", "X1", "Y1", "Z1", "D_x", "D_y", "D_z", "X2", "Y2", "Z2", "D_p", "corroef"};
-	comboboxCoordinateX.resetContent(); //清除现有内容
+	comboboxCoordinateX.resetContent(); //坐标轴选择条,清除现有内容
 	comboboxCoordinateY.resetContent();
 	comboboxCoordinateZ.resetContent();
 	for (int i = 0; i < 13; i++) {
@@ -154,6 +158,20 @@ void ViewFormGL::initControls(HWND handle)
 	comboboxCoordinateX.setCurrentSelection(2); // 设置默认选项
     comboboxCoordinateY.setCurrentSelection(3);
     comboboxCoordinateZ.setCurrentSelection(4);
+
+	comboboxColor.resetContent();      //  图形颜色设置combobox
+	comboboxColor.addString(L"蓝色");
+	comboboxColor.addString(L"红色");
+	comboboxColor.addString(L"绿色");
+	comboboxColor.addString(L"灰色");
+	comboboxColor.setCurrentSelection(0);
+
+	comboboxBackColor.resetContent();      //  背景颜色设置combobox
+	comboboxBackColor.addString(L"黑色");
+	comboboxBackColor.addString(L"白色");
+	comboboxBackColor.setCurrentSelection(0);
+
+	setCamera.check();        // 单选框按钮
 
     // elements for view matrix
     mv[0].set(handle, IDC_M_V_0);

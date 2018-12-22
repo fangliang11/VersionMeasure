@@ -40,7 +40,6 @@ int ControllerGL::close()
     // wait for rendering thread is terminated 等待渲染线程 glThread 执行完毕
     loopFlag = false;
     glThread.join();  // 结束openGL线程，回到主线程
-	//MessageBox(NULL, TEXT("opengl thread 线程结束"), TEXT("ControllerGL中 close函数触发"), 0);
 
     ::DestroyWindow(handle);
     Win::log("OpenGL window is destroyed.");
@@ -145,7 +144,7 @@ int ControllerGL::lButtonDown(WPARAM state, int x, int y)
     // update mouse position
     model->setMousePosition(x, y);
 
-    // set focus to receive wm_mousewheel event
+    // set focus to receive wm_mousewheel event设置焦点
     ::SetFocus(handle);
 
     return 0;

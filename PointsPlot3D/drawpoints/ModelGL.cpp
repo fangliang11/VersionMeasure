@@ -136,35 +136,33 @@ void ModelGL::init()
     glShadeModel(GL_SMOOTH);                        // shading mathod: GL_SMOOTH or GL_FLAT
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);          // 4-byte pixel alignment
 
-	//glBlendFunc(GL_SRC_ALPHA, GL_ZERO);//设置混合显示
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);//设置混合显示
-	//glEnable(GL_BLEND); //设置混合显示
-
-    // enable/disable features
-    //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    // enable/disable features设置特效
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);   //指定颜色和纹理坐标的差值质量 | 选择最高质量选项
     //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
     //glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-    glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_LIGHTING);
-    //glEnable(GL_TEXTURE_2D);
-    //glEnable(GL_CULL_FACE);
-    //glEnable(GL_BLEND);
-    glEnable(GL_SCISSOR_TEST);
+    glEnable(GL_DEPTH_TEST);   //当我们需要绘制透明图片时，就需要关闭它,并且打开混合
+	//glDisable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);   //开启和关闭光照计算
+    glEnable(GL_TEXTURE_2D);  //激活纹理单元
+    glEnable(GL_CULL_FACE);   //激活面剔除
+    glEnable(GL_BLEND);       //激活混合
+    glEnable(GL_SCISSOR_TEST);  //激活多视口
 
-     // track material ambient and diffuse from surface color, call it before glEnable(GL_COLOR_MATERIAL)
+     // track material ambient and diffuse(环境和漫反射) from surface color, call it before glEnable(GL_COLOR_MATERIAL)
     //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     //glEnable(GL_COLOR_MATERIAL);
 
-    glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);   // background color
-    //glClearStencil(0);                              // clear stencil buffer
-    //glClearDepth(1.0f);                             // 0 is near, 1 is far
-    //glDepthFunc(GL_LEQUAL);
+	//glClearColor(1, 1, 1, 0);
+    glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);   // 背景颜色
+    glClearStencil(0);                              // clear stencil buffer指明模板缓冲区的清理值
+    glClearDepth(1.0f);                             // 0 is near, 1 is far指明深度缓冲区的清理值
+    glDepthFunc(GL_LEQUAL);    //如果目标像素z值<＝当前像素z值，则绘制目标像素
 
-    //initLights();
+    initLights();   //光源初始化
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// initialize GLSL programs
+// initialize GLSL programs着色器初始化
 // NOTE:shader programs can be shared among multiple contexts, create only once
 ///////////////////////////////////////////////////////////////////////////////
 bool ModelGL::initShaders()
@@ -180,16 +178,12 @@ bool ModelGL::initShaders()
     return glslReady;
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // clean up OpenGL objects
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::quit()
 {
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // initialize lights
@@ -205,13 +199,11 @@ void ModelGL::initLights()
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightKs);
 
     // position the light in eye space
-    float lightPos[4] = {0, 1, 1, 0};               // directional light
+    float lightPos[4] = {1, 1, 1, 0};               // directional light  FANG
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
     glEnable(GL_LIGHT0);                            // MUST enable each light source after configuration
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // set camera position and lookat direction
@@ -267,8 +259,6 @@ void ModelGL::setCamera(float posX, float posY, float posZ, float targetX, float
     matrixView.setColumn(3, position);
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // set rendering window size
 ///////////////////////////////////////////////////////////////////////////////
@@ -289,10 +279,8 @@ void ModelGL::setWindowSize(int width, int height)
     windowSizeChanged = true;
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
-// configure projection and viewport
+// configure projection and viewport设置透视和视口
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::setViewport(int x, int y, int w, int h)
 {
@@ -309,16 +297,14 @@ void ModelGL::setViewport(int x, int y, int w, int h)
     glLoadIdentity();
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
-// configure projection and viewport of sub window
+// configure projection and viewport of sub window设置子窗口的透视和视口
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::setViewportSub(int x, int y, int width, int height, float nearPlane, float farPlane)
 {
     // set viewport
     glViewport(x, y, width, height);
-    glScissor(x, y, width, height);
+    glScissor(x, y, width, height);  //定义裁剪窗口
 
     // set perspective viewing frustum
     Matrix4 matrix = setFrustum(FOV_Y, (float)(width)/height, nearPlane, farPlane); // FOV, AspectRatio, NearClip, FarClip
@@ -330,15 +316,13 @@ void ModelGL::setViewportSub(int x, int y, int width, int height, float nearPlan
     glLoadIdentity();
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // draw 2D/3D scene
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::draw()
 {
-    drawSub1();
-    drawSub2();
+    drawSub1();  //左视口
+    drawSub2();  //右视口
 
     // post frame
     if(windowSizeChanged)
@@ -349,19 +333,19 @@ void ModelGL::draw()
 
     if(drawModeChanged)
     {
-        if(drawMode == 0)           // fill mode
+        if(drawMode == 0)           // fill mode填充模式
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             glEnable(GL_DEPTH_TEST);
             glEnable(GL_CULL_FACE);
         }
-        else if(drawMode == 1)      // wireframe mode
+        else if(drawMode == 1)      // wireframe mode线框模式
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             //glDisable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
         }
-        else if(drawMode == 2)      // point mode
+        else if(drawMode == 2)      // point mode点阵模式
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
             //glDisable(GL_DEPTH_TEST);
@@ -370,7 +354,6 @@ void ModelGL::draw()
         drawModeChanged = false;
     }
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // draw left window (view from the camera) 绘制左侧窗口————二维平面图显示
@@ -390,7 +373,7 @@ void ModelGL::drawSub1()
         //setViewportSub((halfWidth - windowHeight)/2, 0, windowHeight, windowHeight, 1, 10);
 
     // clear buffer (square area)
-    glClearColor(0.2f, 0.2f, 0.2f, 1);
+    glClearColor(0.5f, 0.5f, 0.5f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     glPushMatrix();
@@ -439,7 +422,6 @@ void ModelGL::drawSub1()
 
 		GLUquadricObj *objCylinder = gluNewQuadric(); //创建二次曲面对象——-圆柱
 		glTranslatef(0.0, 0.0, 0.0);
-		//glRotatef(60, 0.0, 0.0, 1.0);
 		gluCylinder(objCylinder, 1.0, 0.5, 3, 10, 5);
 
         glEnable(GL_COLOR_MATERIAL);
@@ -447,14 +429,11 @@ void ModelGL::drawSub1()
     }
     else
     {
-        // use fixed pipeline
-        //drawTeapot();
-    }
+		MessageBox(NULL, TEXT("渲染失败：glslReady is false!"), TEXT("错误"), 0);
+	}
 
     glPopMatrix();
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // draw right window (3rd person view)  绘制右侧窗口------三维点云图显示
@@ -480,7 +459,7 @@ void ModelGL::drawSub2()
     matView.translate(0, 0, -cameraDistance);
     glLoadMatrixf(matView.get());
 
-    // transform 模型移动
+    // transform
     matModel.rotateZ(modelAngle[2]);
     matModel.rotateY(modelAngle[1]);
     matModel.rotateX(modelAngle[0]);
@@ -488,7 +467,7 @@ void ModelGL::drawSub2()
     matModelView = matView * matModel;
     glLoadMatrixf(matModelView.get());
 
-	// draw grid绘制网格
+	// 绘制网格
 	coordpoint cpoint1 = { AXES_LEN, AXES_LEN, 0 };
 	coordpoint cpoint2 = { -AXES_LEN, -AXES_LEN, 0 };
 	coordpoint cpoint3 = { AXES_LEN, AXES_LEN, 0 };
@@ -497,7 +476,7 @@ void ModelGL::drawSub2()
 	coordpoint cpoint6 = { -AXES_LEN, -AXES_LEN, 0 };
 	drawGrid(cpoint1, cpoint2, cpoint3, cpoint4, cpoint5, cpoint6, 20);
 
-    // draw a teapot and axis绘制坐标轴和标识点
+    // 绘制坐标轴
     drawAxis(5);
 
 	//渲染条件具备，绘制点云
@@ -505,13 +484,14 @@ void ModelGL::drawSub2()
     {
         glUseProgram(progId2);
         //glDisable(GL_COLOR_MATERIAL);
+		glColor4f(0.0f, 0.0f, 0.8f, 1.0f); //蓝色
 
 		if (CTRDRAWFLAG ) {
-			glColor3f(0.0f, 0.0f, 1.0f); //蓝色
+
 			drawPoints(3);   //增加点云
 		}
 
-        //glEnable(GL_COLOR_MATERIAL);
+        glEnable(GL_COLOR_MATERIAL);
         glUseProgram(0);    }
     else
     {
@@ -530,39 +510,46 @@ void ModelGL::drawSub2()
     //drawAxis(0.75f);
 
     // transform camera object移动摄像物体
-    //matModel.identity();
-    //matModel.rotateZ(-cameraAngle[2]);
-    //matModel.rotateY(cameraAngle[1]);
-    //matModel.rotateX(-cameraAngle[0]);
-    //matModel.translate(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
-    //matModelView = matView * matModel;
-    //glLoadMatrixf(matModelView.get());
+    matModel.identity();
+    matModel.rotateZ(-cameraAngle[2]);
+    matModel.rotateY(cameraAngle[1]);
+    matModel.rotateX(-cameraAngle[0]);
+    matModel.translate(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
+    matModelView = matView * matModel;
+    glLoadMatrixf(matModelView.get());
 
-    //// draw the camera绘制相机示意图和锥形显示区
-    //drawCamera();
-    //drawFrustum(FOV_Y, 1, 1, 10);
+    //// draw the camera绘制相机和锥形显示区
+	if (CAMERAFLAG) {
+
+		drawCamera();
+		drawFrustum(FOV_Y, 1, 1, 10);
+	}
 
     glPopMatrix();
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 //生成点云
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::drawPoints(float pointSize) {
 
+	//glDisable(GL_LIGHTING);
+	//glDisable(GL_CULL_FACE);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  //混合函数(混合因子)
+
 	glPointSize(pointSize);
-	glPushMatrix();
+	//glPushMatrix();
 	glBegin(GL_POINTS);
 	for (int i = 0; i < modelROWNUM; i++) {
-		glColor4f(0.0f, 0.0f, 0.5*modelCoordinateZ[i] + 0.1, 1.0f);
+		//glColor4f(0.0f, 0.0f, 0.5*modelCoordinateZ[i] + 0.1, 1.0f);
 		glVertex3f(modelCoordinateX[i], modelCoordinateY[i], 1 - modelCoordinateZ[i]);
 	}
 	glEnd();
-	glPopMatrix();
+	//glPopMatrix();
 
+	//glEnable(GL_CULL_FACE);
+	//glEnable(GL_LIGHTING);
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // draw a grid on the xz plane
@@ -578,10 +565,18 @@ void ModelGL::drawGrid(coordpoint& pt1, coordpoint& pt2, coordpoint& pt3, coordp
 	int yi1 = 0, yi2 = 0, yi3 = 0;
 	int zi1 = 0, zi2 = 0, zi3 = 0;
 
+	float colorLine1[4] = { 0.3f, 0.1f, 0.1f, 0.5f };
+	float colorLine2[4] = { 0.1f, 0.4f, 0.1f, 0.5f };
+	float colorLine3[4] = { 0.1f, 0.1f, 0.4f, 0.5f };
+
+	glDisable(GL_LIGHTING);
+	glDisable(GL_CULL_FACE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	/////////////////////////////////////////////////point1  point2
 	glPushMatrix();
-	glColor4f(0.9f, 0.9f, 0.9f, 0.4f); //白色网格
+	//glColor4f(0.9f, 0.9f, 0.9f, 0.4f); //白色网格
+	glColor4fv(colorLine2);
 	glTranslatef(0, 0, -5);
 	glBegin(GL_LINES);
 	glEnable(GL_LINE_SMOOTH); //抗锯齿
@@ -618,7 +613,8 @@ void ModelGL::drawGrid(coordpoint& pt1, coordpoint& pt2, coordpoint& pt3, coordp
 	//////////////////////////////////////////////point3  point4
 	glPushMatrix();
 	glRotatef(-90, 1.0, 0.0, 0.0);
-	glColor4f(0.0f, 0.9f, 0.9f, 0.4f); //紫色网格
+	//glColor4f(0.0f, 0.9f, 0.9f, 0.4f); //紫色网格
+	glColor4fv(colorLine1);
 	glTranslatef(0, 0, -5);
 	glBegin(GL_LINES);
 	glEnable(GL_LINE_SMOOTH); //抗锯齿
@@ -655,7 +651,8 @@ void ModelGL::drawGrid(coordpoint& pt1, coordpoint& pt2, coordpoint& pt3, coordp
 	///////////////////////////////////////////////////////////////point5  point6
 	glPushMatrix();
 	glRotatef(90, 0.0, 1.0, 0.0);
-	glColor4f(0.0f, 0.9f, 0.0f, 0.4f); //绿色网格
+	//glColor4f(0.0f, 0.9f, 0.0f, 0.4f); //绿色网格
+	glColor4fv(colorLine3);
 	glTranslatef(0, 0, -5);
 	glBegin(GL_LINES);
 	glEnable(GL_LINE_SMOOTH); //抗锯齿
@@ -689,8 +686,9 @@ void ModelGL::drawGrid(coordpoint& pt1, coordpoint& pt2, coordpoint& pt3, coordp
 	glEnd();
 	glPopMatrix();
 
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_LIGHTING);
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // draw the local axis of an object
@@ -743,7 +741,7 @@ void ModelGL::drawAxis(float size)
 	glTranslatef(0, 0, 2.1*size);
 	gluCylinder(objCylinder, 0.08, 0.0, 0.1*size, 10, 5);//Z_箭头
 	glRasterPos3f(-0.3, 0.3, 0);
-	drawCNString("Z ");// Print GL Text ToThe Screen
+	drawCNString("ZZ ");// Print GL Text ToThe Screen
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glTranslatef(0, 0, -2.1*size);
 	glRotatef(-90, 1.0, 0.0, 0.0);
@@ -809,7 +807,7 @@ void ModelGL::drawFrustum(float fovY, float aspectRatio, float nearPlane, float 
     // draw the edges around frustum
     glBegin(GL_LINES);
     glColor4fv(colorLine2);
-    glVertex3f(0, 0, 0);
+    glVertex3f(0, 0, 0);      // near plane
     glColor4fv(colorLine1);
     glVertex3fv(vertices[4]);
 
@@ -819,7 +817,7 @@ void ModelGL::drawFrustum(float fovY, float aspectRatio, float nearPlane, float 
     glVertex3fv(vertices[5]);
 
     glColor4fv(colorLine2);
-    glVertex3f(0, 0, 0);
+    glVertex3f(0, 0, 0);     //far plane
     glColor4fv(colorLine1);
     glVertex3fv(vertices[6]);
 
@@ -862,8 +860,6 @@ void ModelGL::drawFrustum(float fovY, float aspectRatio, float nearPlane, float 
     glEnable(GL_LIGHTING);
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // set the camera position and rotation
 ///////////////////////////////////////////////////////////////////////////////
@@ -879,8 +875,6 @@ void ModelGL::setViewMatrix(float x, float y, float z, float pitch, float headin
     updateViewMatrix();
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // set the object position and rotation
 ///////////////////////////////////////////////////////////////////////////////
@@ -895,8 +889,6 @@ void ModelGL::setModelMatrix(float x, float y, float z, float rx, float ry, floa
 
     updateModelMatrix();
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // update matrix
@@ -929,8 +921,6 @@ void ModelGL::updateModelMatrix()
     matrixModelView = matrixView * matrixModel;
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // rotate the camera for subWin2 (3rd person view)
 ///////////////////////////////////////////////////////////////////////////////
@@ -941,8 +931,6 @@ void ModelGL::rotateCamera(int x, int y)
     mouseX = x;
     mouseY = y;
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // zoom the camera for subWin2 (3rd person view)
@@ -957,8 +945,6 @@ void ModelGL::zoomCameraDelta(float delta)
     cameraDistance -= delta;
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // change drawing mode
 ///////////////////////////////////////////////////////////////////////////////
@@ -970,8 +956,6 @@ void ModelGL::setDrawMode(int mode)
         drawMode = mode;
     }
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // set a perspective frustum with 6 params similar to glFrustum()
@@ -992,8 +976,6 @@ Matrix4 ModelGL::setFrustum(float l, float r, float b, float t, float n, float f
     return matrix;
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // set a symmetric perspective frustum with 4 params similar to gluPerspective
 // (vertical field of view, aspect ratio, near, far)
@@ -1007,8 +989,6 @@ Matrix4 ModelGL::setFrustum(float fovY, float aspectRatio, float front, float ba
     // params: left, right, bottom, top, near, far
     return setFrustum(-width, width, -height, height, front, back);
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // set a orthographic frustum with 6 params similar to glOrtho()
@@ -1026,8 +1006,6 @@ Matrix4 ModelGL::setOrthoFrustum(float l, float r, float b, float t, float n, fl
     matrix[14] = -(f + n) / (f - n);
     return matrix;
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // create glsl programs 创建着色器并链接程序
@@ -1091,8 +1069,6 @@ bool ModelGL::createShaderPrograms()
     }
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // return error message of shader compile status
 // if no errors, it returns empty string
@@ -1119,8 +1095,6 @@ std::string ModelGL::getShaderStatus(GLuint shader)
 
     return message;
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // return error message of shader program status

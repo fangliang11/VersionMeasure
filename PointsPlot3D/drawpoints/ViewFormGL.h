@@ -78,8 +78,12 @@ namespace Win
 		Win::ComboBox comboboxCoordinateX;
 		Win::ComboBox comboboxCoordinateY;
 		Win::ComboBox comboboxCoordinateZ;
+		Win::ComboBox comboboxColor;
+		Win::ComboBox comboboxBackColor;
 		Win::EditBox  editboxFileName;
         Win::Button buttonAbout;
+		Win::RadioButton setCamera;
+		Win::RadioButton hideCamera;
 
         // matrices
         Win::TextBox   mv[16];          // view matrix

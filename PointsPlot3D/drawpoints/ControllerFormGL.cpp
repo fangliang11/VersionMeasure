@@ -158,6 +158,31 @@ int ControllerFormGL::command(int id, int command, LPARAM msg)
 
 		}
 		break;
+	case IDC_COMBO_COLOR:  // 图形颜色选择
+		if (command == BN_CLICKED)
+		{
+
+		}
+		break;
+	case IDC_COMBO_BACKCOLOR:  // 背景颜色选择
+		if (command == BN_CLICKED)
+		{
+
+		}
+		break;
+	case IDC_RADIO_SETCAMERA:
+		if (command == BN_CLICKED)
+		{
+			model->CAMERAFLAG = true;
+		}
+		break;
+	case IDC_RADIO_HIDECAMERA:
+		if (command == BN_CLICKED)
+		{
+			model->CAMERAFLAG = false;
+		}
+		break;
+
     }
     return 0;
 }
