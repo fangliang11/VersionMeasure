@@ -9,7 +9,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 #define WIN32_LEAN_AND_MEAN             // exclude rarely-used stuff from Windows headers
 
-//#pragma comment(lib,"ComCtl32.lib")  // FANG
+#pragma comment(lib,"ComCtl32.lib")  // FANG
 
 #include <windows.h>
 #include <commctrl.h>                   // common controls
@@ -127,7 +127,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR cmdArgs, int cmdS
     style = (DWORD)::GetWindowLongPtr(mainWin.getHandle(), GWL_STYLE);
     styleEx = (DWORD)::GetWindowLongPtr(mainWin.getHandle(), GWL_EXSTYLE);
     ::AdjustWindowRectEx(&rect, style, FALSE, styleEx);
-    ::SetWindowPos(mainWin.getHandle(), 0, 0, 0, (rect.right-rect.left), (rect.bottom-rect.top), SWP_NOZORDER);
+    ::SetWindowPos(mainWin.getHandle(), 0, 100, 100, (rect.right-rect.left), (rect.bottom-rect.top), SWP_NOZORDER);
 
     // show all windows显示所有窗口
     glWin.show();//opengl渲染窗口

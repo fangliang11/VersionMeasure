@@ -17,7 +17,7 @@
 using namespace std;
 
 #include "Window.h"
-#include "ControllerGL.h"
+//#include "ControllerGL.h"
 #include "ControllerFormGL.h"
 #include "resource.h"
 #include "Log.h"
@@ -73,7 +73,8 @@ int ControllerFormGL::create()
 ///////////////////////////////////////////////////////////////////////////////
 ReadData myData;
 string filename;
-int numX=3, numY=4, numZ=5;
+string selectname;
+int numX=3, numY=4, numZ=5;  //ViewFormGL 中也有初始化的combobo列选择设置
 
 int ControllerFormGL::command(int id, int command, LPARAM msg)
 {
@@ -98,8 +99,8 @@ int ControllerFormGL::command(int id, int command, LPARAM msg)
     case IDC_BUTTON_ABOUT:
         if(command == BN_CLICKED)
         {
-            // open About dialog
-            ::DialogBox((HINSTANCE)::GetWindowLongPtr(handle, GWLP_HINSTANCE), MAKEINTRESOURCE(IDD_ABOUT), handle, aboutDialogProcedure);
+			::DialogBox((HINSTANCE)::GetWindowLongPtr(handle, GWLP_HINSTANCE), MAKEINTRESOURCE(IDD_TEST), handle, aboutDialogProcedure);
+
         }
         break;
 
@@ -107,24 +108,17 @@ int ControllerFormGL::command(int id, int command, LPARAM msg)
 		if (command == BN_CLICKED)   //打开文件按钮
 		{
 			//打开数据文件
-			filename = myData.selectFile();
+			selectname = myData.selectFile();
 			model->CTRDRAWFLAG = false; //绘图重置
-			view->setEditText(filename);
+			view->setEditText(selectname);
 
-			//HWND hwnd = FindWindow(L"三维点云图生成软件", NULL);
-			//HWND hwndGL = GetWindow(hwnd, GW_CHILD);//获取 glWin 窗口的句柄, 即OpenGL窗口的句柄
-			//::SendMessage(hwndGL, WM_MBUTTONDOWN, 0, 0); //绘图标志位复位
 			SELECTFINISHFLAG = true;
 		}
 		break;
 	case IDC_BUTTON_DRAW:
 		if (command == BN_CLICKED)    // 重绘按钮
 		{
-			if (!SELECTFINISHFLAG) {
-				//filename = view->getEditText();
-			}
-
-			//myData.readFile(filename, 5,ROWNUM, coordinateX, coordinateY, coordinateZ);
+			filename = view->getEditText(handle);
 			myData.readFile(filename, 5, numX, numY, numZ, ROWNUM, coordinateX, coordinateY, coordinateZ);
 
 			model->modelCoordinateX = coordinateX;
@@ -133,11 +127,11 @@ int ControllerFormGL::command(int id, int command, LPARAM msg)
 			model->modelROWNUM = ROWNUM;
 			model->CTRDRAWFLAG = true;
 
-			//HWND hwnd = FindWindow(L"三维点云图生成软件", NULL);// 获取主窗口句柄 mainWin
-			//HWND hwndGL = GetWindow(hwnd, GW_CHILD);//获取 glWin 窗口的句柄, 即OpenGL窗口的句柄
-			//::SendMessage(hwndGL, WM_PAINT, 0, 0);//发送绘图消息
+			if (myData.READFINISHFLAG) {
 
-			//InvalidateRect(hwnd, NULL, true);  //使用InvalidateRect函数触发WM_PAINT消息
+				MessageBox(NULL, TEXT("图像已生成"), TEXT("重绘完成"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
+
+			}
 		}
 		break;
 	case IDC_COMBO_X:  // 选择 X 轴坐标
@@ -272,7 +266,7 @@ int ControllerFormGL::timer(WPARAM eventId, LPARAM callback)
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// dialog procedure for About window帮助对话框的处理
+// dialog procedure for About window关于对话框的处理
 ///////////////////////////////////////////////////////////////////////////////
 INT_PTR CALLBACK aboutDialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -295,14 +289,14 @@ INT_PTR CALLBACK aboutDialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
         break;
 
     case WM_NOTIFY:
-        NMHDR* nmhdr = (NMHDR*)lParam;
-        HWND from = nmhdr->hwndFrom;
-        if(from == ::GetDlgItem(hwnd, IDC_SYSLINK1) && (nmhdr->code == NM_CLICK || nmhdr->code == NM_RETURN))
-        {
-            // cast again lParam to NMLINK*
-            NMLINK* nmlink = (NMLINK*)lParam;
-            ::ShellExecute(0, L"open", nmlink->item.szUrl, 0, 0, SW_SHOW);
-        }
+        //NMHDR* nmhdr = (NMHDR*)lParam;
+        //HWND from = nmhdr->hwndFrom;
+        //if(from == ::GetDlgItem(hwnd, IDC_SYSLINK1) && (nmhdr->code == NM_CLICK || nmhdr->code == NM_RETURN))
+        //{
+        //    // cast again lParam to NMLINK*
+        //    NMLINK* nmlink = (NMLINK*)lParam;
+        //    ::ShellExecute(0, L"open", nmlink->item.szUrl, 0, 0, SW_SHOW);
+        //}
         break;
     }
 

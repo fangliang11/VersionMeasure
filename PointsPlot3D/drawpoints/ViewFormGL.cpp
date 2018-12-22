@@ -51,7 +51,7 @@ void ViewFormGL::initControls(HWND handle)
 
     // set all controls
     buttonAbout.set(handle, IDC_BUTTON_ABOUT);
-    buttonAbout.setImage(::LoadIcon(0, IDI_INFORMATION));
+    //buttonAbout.setImage(::LoadIcon(0, IDI_INFORMATION));
 
     buttonResetView.set(handle, IDC_BUTTON_VIEW_RESET);
     textViewPosX.set(handle, IDC_LABEL_VIEW_PX);
@@ -139,11 +139,10 @@ void ViewFormGL::initControls(HWND handle)
 	comboboxCoordinateY.set(handle, IDC_COMBO_Y);
 	comboboxCoordinateZ.set(handle, IDC_COMBO_Z);
 
-	string strTemp[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"};
+	string strTemp[] = {"X", "Y", "X1", "Y1", "Z1", "D_x", "D_y", "D_z", "X2", "Y2", "Z2", "D_p", "corroef"};
 	comboboxCoordinateX.resetContent(); //清除现有内容
 	comboboxCoordinateY.resetContent();
 	comboboxCoordinateZ.resetContent();
-
 	for (int i = 0; i < 13; i++) {
 		wstring widstr = wstring(strTemp[i].begin(), strTemp[i].end());
 		const wchar_t *pwidstr = widstr.c_str();
@@ -152,6 +151,9 @@ void ViewFormGL::initControls(HWND handle)
 		comboboxCoordinateZ.addString(pwidstr);
 		*pwidstr++;
 	}
+	comboboxCoordinateX.setCurrentSelection(2); // 设置默认选项
+    comboboxCoordinateY.setCurrentSelection(3);
+    comboboxCoordinateZ.setCurrentSelection(4);
 
     // elements for view matrix
     mv[0].set(handle, IDC_M_V_0);
@@ -250,15 +252,26 @@ void ViewFormGL::setEditText(string filename) {
 ///////////////////////////////////////////////////////////////////////////////
 // 获取文本编辑框内容
 ///////////////////////////////////////////////////////////////////////////////
-string ViewFormGL::getEditText() {
-	int length;
-	length = editboxFileName.getTextLength();
-	wchar_t* widecstr;
-	editboxFileName.getText(widecstr, length);
-	wstring ws(widecstr);                          // wchar_t  转  string
-	string filename(ws.begin(), ws.end());
+string ViewFormGL::getEditText(HWND handle) {
 
-	return filename;
+	TCHAR tcharname[128]; //结果
+	GetWindowText(GetDlgItem(handle, IDC_EDIT_FILENAME), tcharname, 128);
+	TCHAR *tchar = tcharname;  // TCHAR型转成 string 型
+	wstring ws(tchar);
+	string str(ws.begin(), ws.end());
+
+
+
+	//int length;
+	//length = editboxFileName.getTextLength();
+
+	//wchar_t* widecstr = 0;
+	//editboxFileName.getText(widecstr, length);
+
+	//wstring ws(widecstr);                          // wchar_t  转  string
+	//string filename(ws.begin(), ws.end());
+
+	return str;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

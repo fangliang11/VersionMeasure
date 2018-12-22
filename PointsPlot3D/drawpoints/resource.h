@@ -4,7 +4,6 @@
 //
 #define IDD_FORMVIEW                    101
 #define IDT_TIMER                       101
-#define IDD_ABOUT                       102
 #define IDB_BITMAP_SONGHO               103
 #define IDI_ICON1                       106
 #define IDR_MENU                        113
@@ -15,6 +14,7 @@
 #define IDI_IFTSSMALL                   124
 #define IDI_ICON4                       125
 #define IDB_BITMAP1                     128
+#define IDD_TEST                        129
 #define IDC_M_MV_0                      1001
 #define IDC_M_MV_1                      1002
 #define IDC_M_MV_2                      1003
@@ -92,7 +92,6 @@
 #define IDC_LABEL_VIEW_GL               1102
 #define IDC_LABEL_MODEL_GL              1103
 #define IDC_OK                          1104
-#define IDC_SYSLINK1                    1107
 #define IDC_BUTTON_ABOUT                1108
 #define IDC_CHECK1                      1111
 #define IDC_LIST1                       1112
@@ -122,6 +121,8 @@
 #define IDC_EDIT_FILENAME               1128
 #define IDC_BUTTON_OPEN                 1129
 #define IDC_BUTTON_DRAW                 1130
+#define IDC_COMBO4                      1132
+#define IDC_COMBO_TEST                  1132
 #define ID_40003                        40003
 #define ID_40004                        40004
 #define ID_40005                        40005
@@ -141,9 +142,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        129
+#define _APS_NEXT_RESOURCE_VALUE        131
 #define _APS_NEXT_COMMAND_VALUE         40018
-#define _APS_NEXT_CONTROL_VALUE         1131
+#define _APS_NEXT_CONTROL_VALUE         1133
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

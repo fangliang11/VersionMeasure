@@ -21,8 +21,6 @@
 
 #include <cmath>
 #include "Window.h"
-#include "ControllerGL.h"
-#include "ControllerFormGL.h"
 #include "ModelGL.h"
 #include "ViewGL.h"
 #include "ViewFormGL.h"

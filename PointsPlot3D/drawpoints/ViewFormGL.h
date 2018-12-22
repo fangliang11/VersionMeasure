@@ -32,7 +32,7 @@ namespace Win
         void updateMatrices();
 		int getComboSelect(int ComboBoxID);
 		void setEditText(string filename);
-		string getEditText();
+		string getEditText(HWND handle);
 		
     protected:
 

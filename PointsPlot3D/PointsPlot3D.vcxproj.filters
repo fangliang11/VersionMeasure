@@ -143,4 +143,21 @@
       <Filter>资源文件</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="drawpoints\Win32OpenGL.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Users\fang\Source\Repos\WindowsProject1\matrixModelView1204\src\iftsbig.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="drawpoints\iftssmall.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="drawpoints\iftsbig.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="drawpoints\iftslogo.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

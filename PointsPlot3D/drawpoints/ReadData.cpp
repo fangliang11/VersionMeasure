@@ -43,7 +43,7 @@ string ReadData::selectFile() {
 	if (GetOpenFileName(&ofn))
 	{
 		SELECTFINISHFLAG = true;
-		MessageBox(NULL, strFilename, TEXT("已选择数据"), 0);
+		//MessageBox(NULL, strFilename, TEXT("已选择数据"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
 	}
 
 	TCHAR *tchar = strFilename;  // TCHAR型转成 string 型
@@ -73,7 +73,7 @@ int ReadData::readFile(string filename, int AXES_LEN,
 
 	ifstream myfile(filename);
 	if (!myfile.is_open()) {
-		MessageBox(NULL, TEXT("读取数据失败\n\n请选择或输入数据文件的名称"), TEXT("错误"), 0);
+		MessageBox(NULL, TEXT("读取数据失败\n\n请选择或输入数据文件的名称"), TEXT("错误"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
 
 		return 0;
 	}
@@ -164,7 +164,8 @@ int ReadData::readFile(string filename, int AXES_LEN, int column_num_X, int colu
 
 	ifstream myfile(filename);
 	if (!myfile.is_open()) {
-		MessageBox(NULL, TEXT("读取数据失败\n\n请选择或输入数据文件的名称"), TEXT("错误"), 0);
+		READFINISHFLAG = false;
+		MessageBox(NULL, TEXT("读取数据失败\n\n请输入正确的文件名"), TEXT("错误"), MB_OK| MB_SYSTEMMODAL | MB_ICONERROR);
 
 		return 0;
 	}
@@ -247,6 +248,7 @@ int ReadData::readFile(string filename, int AXES_LEN, int column_num_X, int colu
 		x = coordinateX;
 		y = coordinateY;
 		z = coordinateZ;
+		READFINISHFLAG = true;
 
 		return 1;
 	}

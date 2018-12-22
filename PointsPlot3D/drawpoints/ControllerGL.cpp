@@ -16,8 +16,8 @@
 #include <vector>
 #include "ControllerGL.h"
 #include "Log.h"
-#include "ViewFormGL.h"
-#include "ControllerFormGL.h"
+//#include "ViewFormGL.h"
+//#include "ControllerFormGL.h"
 using namespace Win;
 
 

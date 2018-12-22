@@ -187,6 +187,13 @@
     <ResourceCompile Include="drawpoints\log.rc" />
     <ResourceCompile Include="drawpoints\matrixModelView.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Users\fang\Source\Repos\WindowsProject1\matrixModelView1204\src\iftsbig.ico" />
+    <Image Include="drawpoints\iftsbig.ico" />
+    <Image Include="drawpoints\iftslogo.bmp" />
+    <Image Include="drawpoints\iftssmall.ico" />
+    <Image Include="drawpoints\Win32OpenGL.ico" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

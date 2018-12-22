@@ -10,7 +10,7 @@
 
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
-#include <GL/freeglut.h>
+#include <GL/gl.h>
 #include "ViewGL.h"
 #include "Controller.h"         // for dummy GL window
 #include "Window.h"             // for dummy window

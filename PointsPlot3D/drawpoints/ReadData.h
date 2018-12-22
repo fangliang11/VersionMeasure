@@ -44,8 +44,8 @@ public:
 	//struct Coordinate;
 	//Coordinate getCoordinate(string filename, int AXES_LEN, vector<float> x, vector<float> y, vector<float> z);
 
-	bool READFINISHFLAG = false;
-	bool SELECTFINISHFLAG = false;
+	bool READFINISHFLAG;
+	bool SELECTFINISHFLAG;
 
 };
 
