@@ -152,7 +152,7 @@ void ModelGL::init()
     //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     //glEnable(GL_COLOR_MATERIAL);
 
-	//glClearColor(1, 1, 1, 0);
+	//glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
     glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);   // 背景颜色
     glClearStencil(0);                              // clear stencil buffer指明模板缓冲区的清理值
     glClearDepth(1.0f);                             // 0 is near, 1 is far指明深度缓冲区的清理值
@@ -360,12 +360,12 @@ void ModelGL::draw()
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::drawSub1()
 {
-    // clear buffer (whole area)
+    // clear buffer (whole area)清除整个显示区缓存
     setViewportSub(0, 0, windowWidth, windowHeight, 1, 10);
     glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-    // make left viewport square viewport
+    // make left viewport square viewport设置左视口为矩形
     if(windowHeight > povWidth)
         setViewportSub(0, (windowHeight - povWidth)/2, povWidth, povWidth, 1, 10);
     else
@@ -373,7 +373,7 @@ void ModelGL::drawSub1()
         //setViewportSub((halfWidth - windowHeight)/2, 0, windowHeight, windowHeight, 1, 10);
 
     // clear buffer (square area)
-    glClearColor(0.5f, 0.5f, 0.5f, 1);
+    glClearColor(0.3f, 0.3f, 0.3f, 1);  //设置左视口背景
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     glPushMatrix();
@@ -416,15 +416,15 @@ void ModelGL::drawSub1()
     if(glslReady)
     {
         // use GLSL
-        glUseProgram(progId2);
-        glDisable(GL_COLOR_MATERIAL);
+        glUseProgram(progId1);  // 设置渲染模式为颜色渲染
+        //glDisable(GL_COLOR_MATERIAL);
         //drawTeapot();
 
 		GLUquadricObj *objCylinder = gluNewQuadric(); //创建二次曲面对象——-圆柱
 		glTranslatef(0.0, 0.0, 0.0);
 		gluCylinder(objCylinder, 1.0, 0.5, 3, 10, 5);
 
-        glEnable(GL_COLOR_MATERIAL);
+        //glEnable(GL_COLOR_MATERIAL);
         glUseProgram(0);
     }
     else
@@ -448,6 +448,10 @@ void ModelGL::drawSub2()
     // it is done in drawSub1(), no need to clear buffer
     //glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);   // background color
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	glClearColor(0.5f, 0.5f, 0.5f, 1);  //设置右视口背景
+	glClearColor(backcolorR, backcolorG, backcolorB, backcolorA);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     glPushMatrix();
 
@@ -480,21 +484,18 @@ void ModelGL::drawSub2()
     drawAxis(5);
 
 	//渲染条件具备，绘制点云
-    if(glslReady)
+    if(glslReady && CTRDRAWFLAG)
     {
-        glUseProgram(progId2);
-        //glDisable(GL_COLOR_MATERIAL);
-		glColor4f(0.0f, 0.0f, 0.8f, 1.0f); //蓝色
-
-		if (CTRDRAWFLAG ) {
-
-			drawPoints(3);   //增加点云
-		}
+        glUseProgram(progId1);
+        glDisable(GL_COLOR_MATERIAL);
+		
+		glColor4f(imagecolorR, imagecolorG, imagecolorB, imagecolorA);
+		drawPoints(3);   //增加点云
 
         glEnable(GL_COLOR_MATERIAL);
-        glUseProgram(0);    }
-    else
-    {
+        glUseProgram(0);
+	}
+    else if (!glslReady) {
 		MessageBox(NULL, TEXT("渲染失败：glslReady is false!"), TEXT("错误"), 0);
     }
 

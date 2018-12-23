@@ -140,10 +140,14 @@ int ControllerFormGL::command(int id, int command, LPARAM msg)
 		{
 			numX = 0;
 			numX = view->getComboSelect(IDC_COMBO_X) + 1;
+
+			float *ptcolor;
+			ptcolor = view->getColorSelect();
+
 		}
 		break;
 	case IDC_COMBO_Y:  // 选择 Y 轴坐标
-		if (command == BN_CLICKED)
+		if (command == CBN_SELENDOK)
 		{
 			numY = 0;
 			numY = view->getComboSelect(IDC_COMBO_Y) + 1;
@@ -151,7 +155,7 @@ int ControllerFormGL::command(int id, int command, LPARAM msg)
 		}
 		break;
 	case IDC_COMBO_Z:  // 选择 Z 轴坐标
-		if (command == BN_CLICKED)
+		if (command == CBN_SELENDOK)
 		{
 			numZ = 0;
 			numZ = view->getComboSelect(IDC_COMBO_Z) + 1;
@@ -159,15 +163,36 @@ int ControllerFormGL::command(int id, int command, LPARAM msg)
 		}
 		break;
 	case IDC_COMBO_COLOR:  // 图形颜色选择
-		if (command == BN_CLICKED)
+		if (command == CBN_SELENDOK)
 		{
+			float *ptcolor;
+			ptcolor = view->getColorSelect();
+
+			float R = *ptcolor;
+			float G = *(ptcolor+1);
+			float B = *(ptcolor + 2);
+			float A = *(ptcolor + 3);
+			model->imagecolorR = *ptcolor;
+			model->imagecolorG = *(ptcolor+1);
+			model->imagecolorB = *(ptcolor+2);
+			model->imagecolorA = *(ptcolor+3);
 
 		}
 		break;
 	case IDC_COMBO_BACKCOLOR:  // 背景颜色选择
-		if (command == BN_CLICKED)
+		if (command == CBN_SELENDOK)
 		{
+			float *ptbackcolor;
+			ptbackcolor = view->getBackColorSelect();
 
+			float R = *ptbackcolor;
+			float G = *(ptbackcolor + 1);
+			float B = *(ptbackcolor + 2);
+			float A = *(ptbackcolor + 3);
+			model->backcolorR = *ptbackcolor;
+			model->backcolorG = *(ptbackcolor + 1);
+			model->backcolorB = *(ptbackcolor + 2);
+			model->backcolorA = *(ptbackcolor + 3);
 		}
 		break;
 	case IDC_RADIO_SETCAMERA:

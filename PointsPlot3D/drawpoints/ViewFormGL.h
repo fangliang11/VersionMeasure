@@ -33,7 +33,9 @@ namespace Win
 		int getComboSelect(int ComboBoxID);
 		void setEditText(wstring filename);
 		string getEditText(HWND handle);
-		
+		float *getColorSelect();
+		float *getBackColorSelect();
+
     protected:
 
     private:

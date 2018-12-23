@@ -94,6 +94,19 @@ public:
 
 	bool CTRDRAWFLAG = false;  // opengl重绘标志位
 	bool CAMERAFLAG = true;  // 显示/隐藏相机
+	int color = 0;
+	int backcolor = 0;
+	float imagecolor[4];
+	float backgroundcolor[4];
+	float imagecolorR = 0.0f;
+	float imagecolorG = 0.0f;
+	float imagecolorB = 1.0f;
+	float imagecolorA = 1.0f;
+	float backcolorR = 0.0f;
+	float backcolorG = 0.0f;
+	float backcolorB = 0.0f;
+	float backcolorA = 1.0f;
+
 
 protected:
 
@@ -153,7 +166,7 @@ private:
     // glsl extension
     bool glslSupported;
     bool glslReady;
-    GLuint progId1;             // shader program with color
-    GLuint progId2;             // shader program with color + lighting
+    GLuint progId1;             // shader program with color颜色渲染
+    GLuint progId2;             // shader program with color + lighting颜色加灯光渲染
 };
 #endif
