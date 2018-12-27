@@ -157,6 +157,7 @@
     <ClInclude Include="drawpoints\procedure.h" />
     <ClInclude Include="drawpoints\ReadData.h" />
     <ClInclude Include="drawpoints\resource.h" />
+    <ClInclude Include="drawpoints\Shader.h" />
     <ClInclude Include="drawpoints\teapot.h" />
     <ClInclude Include="drawpoints\Vectors.h" />
     <ClInclude Include="drawpoints\ViewFormGL.h" />

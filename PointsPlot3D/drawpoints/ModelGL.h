@@ -22,6 +22,7 @@
 #include <GL/gl.h>
 #endif
 
+#include "png.h"
 #include <string>
 #include "Matrices.h"
 #include "glext.h"
@@ -86,6 +87,8 @@ public:
     void zoomCameraDelta(float delta);  // for mousewheel
 
     bool isShaderSupported()            { return glslSupported; }
+
+	void shaderImage(const char* filename);   //创建图片纹理
 
 	vector<float> modelCoordinateX;  //  点云图 点 的坐标
 	vector<float> modelCoordinateY;
@@ -168,5 +171,10 @@ private:
     bool glslReady;
     GLuint progId1;             // shader program with color颜色渲染
     GLuint progId2;             // shader program with color + lighting颜色加灯光渲染
+	GLuint progId3;             // 图片显示着色器
+	
+	//GLuint texture;
+	//GLuint VBO, VAO, EBO;
+
 };
 #endif

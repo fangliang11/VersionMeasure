@@ -254,14 +254,16 @@ void drawCamera()
 	float specularColor[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 
 	// set specular and shiniess using glMaterial
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess); // range 0 ~ 128
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuseColor);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambientColor);
+	//glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess); // range 0 ~ 128
+	//glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
+	//glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuseColor);
+	//glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambientColor);
 
 	// set ambient and diffuse color using glColorMaterial (gold-yellow)
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glColor3fv(diffuseColor);
+	//glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	//glColor3fv(diffuseColor);
+
+	//glClearColor(0.5f, 0.2f, 0.2f, 1);
 
 	// start to render polygons
 	glEnableClientState(GL_NORMAL_ARRAY);

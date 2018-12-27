@@ -127,6 +127,9 @@
 #define IDC_COMBO_COLOR                 1135
 #define IDC_COMBO_BACKCOLOR             1136
 #define IDC_BUTTON_IMAGEOPEN            1137
+#define IDC_BUTTON_SAVE                 1139
+#define IDC_SLIDER_COLOR                1140
+#define IDC_STATIC_COLOR                1141
 #define ID_40003                        40003
 #define ID_40004                        40004
 #define ID_40005                        40005
@@ -148,7 +151,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        132
 #define _APS_NEXT_COMMAND_VALUE         40018
-#define _APS_NEXT_CONTROL_VALUE         1139
+#define _APS_NEXT_CONTROL_VALUE         1142
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

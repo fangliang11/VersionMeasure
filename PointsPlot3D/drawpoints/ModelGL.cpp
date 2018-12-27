@@ -13,6 +13,9 @@
 #include <windows.h>    // include windows.h to avoid thousands of compile errors even though this class is not depending on Windows
 #endif
 
+#include "GL/glew.h"
+#include "SOIL.h"
+
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
@@ -26,7 +29,8 @@
 #include "ViewFormGL.h"
 #include "teapot.h"             // 3D mesh of teapot
 #include "cameraSimple.h"       // 3D mesh of camera
-//#include "readFile.h"
+#include "Shader.h"
+
 
 // constants
 const float DEG2RAD = 3.141593f / 180;
@@ -40,6 +44,7 @@ const float CAMERA_DISTANCE = 25.0f;    // camera distance
 
 
 // flat shading ===========================================平面着色
+//顶点着色器，对顶点坐标的描述
 const char* vsSource1 = R"(
 void main()
 {
@@ -47,13 +52,13 @@ void main()
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 }
 )";
+//片段着色器，对颜色的描述
 const char* fsSource1 = R"(
 void main()
 {
     gl_FragColor = gl_Color;
 }
 )";
-
 
 // blinn specular shading =================================模拟金属镜面着色
 const char* vsSource2 = R"(
@@ -93,6 +98,28 @@ void main()
 }
 )";
 
+//  着色器 纹理显示      正常
+const GLchar* vertexShaderSource = "#version 330 core\n"
+"layout (location = 0) in vec3 position;\n"
+"layout (location = 1) in vec3 color;\n"
+"layout (location = 2) in vec2 texCoord;\n"
+"out vec3 ourColor;\n"
+"out vec2 TexCoord;\n"
+"void main()\n"
+"{\n"
+"gl_Position = vec4(position, 1.0f);\n"
+"ourColor = color;\n"
+"TexCoord = texCoord;\n"
+"}\n\0";
+const GLchar* fragmentShaderSource = "#version 330 core\n"
+"in vec3 ourColor;\n"
+"in vec2 TexCoord;\n"
+"out vec4 color;\n"
+"uniform sampler2D ourTexture;\n"
+"void main()\n"
+"{\n"
+"color = texture(ourTexture, TexCoord);\n"
+"}\n\0";
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -130,40 +157,47 @@ ModelGL::~ModelGL()
 ///////////////////////////////////////////////////////////////////////////////
 // initialize OpenGL states and scene
 ///////////////////////////////////////////////////////////////////////////////
-
 void ModelGL::init()
 {
-    glShadeModel(GL_SMOOTH);                        // shading mathod: GL_SMOOTH or GL_FLAT
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);          // 4-byte pixel alignment
+	glShadeModel(GL_SMOOTH);                        // shading mathod: GL_SMOOTH or GL_FLAT
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);          // 4-byte pixel alignment
 
-    // enable/disable features设置特效
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);   //指定颜色和纹理坐标的差值质量 | 选择最高质量选项
-    //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-    //glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-    glEnable(GL_DEPTH_TEST);   //当我们需要绘制透明图片时，就需要关闭它,并且打开混合
-	//glDisable(GL_DEPTH_TEST);
+	// enable/disable features设置特效
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);   //指定颜色和纹理坐标的差值质量 | 选择最高质量选项
+	glEnable(GL_DEPTH_TEST);   //当我们需要绘制透明图片时，就需要关闭它,并且打开混合
 	glEnable(GL_LIGHTING);   //开启和关闭光照计算
-    glEnable(GL_TEXTURE_2D);  //激活纹理单元
-    glEnable(GL_CULL_FACE);   //激活面剔除
-    glEnable(GL_BLEND);       //激活混合
-    glEnable(GL_SCISSOR_TEST);  //激活多视口
 
-     // track material ambient and diffuse(环境和漫反射) from surface color, call it before glEnable(GL_COLOR_MATERIAL)
-    //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    //glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_TEXTURE_2D);  //设置纹理
+	//glEnable(GL_CULL_FACE);   //激活面剔除
+	glEnable(GL_BLEND);       //激活混合
+	glEnable(GL_SCISSOR_TEST);  //激活多视口
 
-	//glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
-    glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);   // 背景颜色
-    glClearStencil(0);                              // clear stencil buffer指明模板缓冲区的清理值
-    glClearDepth(1.0f);                             // 0 is near, 1 is far指明深度缓冲区的清理值
-    glDepthFunc(GL_LEQUAL);    //如果目标像素z值<＝当前像素z值，则绘制目标像素
+	 // track material ambient and diffuse(环境和漫反射) from surface color, call it before glEnable(GL_COLOR_MATERIAL)
+	//glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	//glEnable(GL_COLOR_MATERIAL);
 
-    initLights();   //光源初始化
+	glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);   // 背景颜色 黑色
+	glClearStencil(0);                              // clear stencil buffer指明模板缓冲区的清理值
+	glClearDepth(1.0f);                             // 0 is near, 1 is far指明深度缓冲区的清理值
+	glDepthFunc(GL_LEQUAL);    //如果目标像素z值<＝当前像素z值，则绘制目标像素
+
+	//initLights();   //光源初始化
+
+	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
+	glewExperimental = GL_TRUE;
+	// Initialize GLEW to setup the OpenGL Function pointers
+	glewInit();
+
+	AllocConsole();
+	freopen("CONIN$", "r+t", stdin); // 重定向 STDIN
+	freopen("CONOUT$", "w+t", stdout); // 重定向STDOUT
+	//fclose();
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // initialize GLSL programs着色器初始化
-// NOTE:shader programs can be shared among multiple contexts, create only once
+// NOTE:shader programs can be shared among multiple contexts, create only once着色器程序可被多个上下文共享，只需创建一次
 ///////////////////////////////////////////////////////////////////////////////
 bool ModelGL::initShaders()
 {
@@ -206,7 +240,7 @@ void ModelGL::initLights()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// set camera position and lookat direction
+// set camera position and lookat direction设置相机位置和朝向
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::setCamera(float posX, float posY, float posZ, float targetX, float targetY, float targetZ)
 {
@@ -260,7 +294,7 @@ void ModelGL::setCamera(float posX, float posY, float posZ, float targetX, float
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// set rendering window size
+// set rendering window size设置渲染窗口大小
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::setWindowSize(int width, int height)
 {
@@ -268,11 +302,11 @@ void ModelGL::setWindowSize(int width, int height)
     windowWidth = width;
     windowHeight = height;
 
-    // compute dim for point of view screen
+    // compute dim for point of view screen计算平面点的尺寸
     povWidth = windowWidth / 2;
     if(povWidth > windowHeight)
     {
-        // if it is wider than height, reduce to the height (make it square)
+        // if it is wider than height, reduce to the height (make it square)设置为正方形
         povWidth = windowHeight;
     }
 
@@ -280,10 +314,11 @@ void ModelGL::setWindowSize(int width, int height)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// configure projection and viewport设置透视和视口
+// configure projection and viewport设置投影和视口
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::setViewport(int x, int y, int w, int h)
 {
+
     // set viewport to be the entire window
     glViewport((GLsizei)x, (GLsizei)y, (GLsizei)w, (GLsizei)h);
 
@@ -298,12 +333,13 @@ void ModelGL::setViewport(int x, int y, int w, int h)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// configure projection and viewport of sub window设置子窗口的透视和视口
+// configure projection and viewport of sub window设置 子 窗口的投影和视口
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::setViewportSub(int x, int y, int width, int height, float nearPlane, float farPlane)
 {
     // set viewport
     glViewport(x, y, width, height);
+	//glViewport(0, 0, 500, 500);
     glScissor(x, y, width, height);  //定义裁剪窗口
 
     // set perspective viewing frustum
@@ -319,10 +355,14 @@ void ModelGL::setViewportSub(int x, int y, int width, int height, float nearPlan
 ///////////////////////////////////////////////////////////////////////////////
 // draw 2D/3D scene
 ///////////////////////////////////////////////////////////////////////////////
+
+
 void ModelGL::draw()
 {
-    drawSub1();  //左视口
-    drawSub2();  //右视口
+
+
+	drawSub1();  //左视口
+    //drawSub2();  //右视口
 
     // post frame
     if(windowSizeChanged)
@@ -360,8 +400,8 @@ void ModelGL::draw()
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::drawSub1()
 {
-    // clear buffer (whole area)清除整个显示区缓存
-    setViewportSub(0, 0, windowWidth, windowHeight, 1, 10);
+    setViewportSub(0, 0, windowWidth, windowHeight, 1, 10);//设置子窗口视口和透视
+	// clear buffer (whole area)清除整个显示区缓存
     glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -373,8 +413,10 @@ void ModelGL::drawSub1()
         //setViewportSub((halfWidth - windowHeight)/2, 0, windowHeight, windowHeight, 1, 10);
 
     // clear buffer (square area)
-    glClearColor(0.3f, 0.3f, 0.3f, 1);  //设置左视口背景
+    glClearColor(0.5f, 0.2f, 0.2f, 1);  //设置左视口背景
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	
+
 
     glPushMatrix();
 
@@ -387,52 +429,160 @@ void ModelGL::drawSub1()
     //    glRotatef(-cameraAngle[1], 0, 1, 0); // heading (Y)
     //    glRotatef(-cameraAngle[0], 1, 0, 0); // pitch (X)
     //    glTranslatef(-cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
-    glLoadMatrixf(matrixView.get());
 
-    // always draw the grid at the origin (before any modeling transform)
-    //drawGrid(10, 1);
 
-    // transform objects ======================================================
-    // From now, all transform will be for modeling matrix only.
-    // (from object space to world space)
-    // See updateModelMatrix() how matrixModel is constructed. The equivalent
-    // OpenGL calls are;
-    //    glLoadIdentity();
-    //    glTranslatef(modelPosition[0], modelPosition[1], modelPosition[2]);
-    //    glRotatef(modelAngle[0], 1, 0, 0);
-    //    glRotatef(modelAngle[1], 0, 1, 0);
-    //    glRotatef(modelAngle[2], 0, 0, 1);
+    glLoadMatrixf(matrixView.get()); //加载视图矩阵
 
-    // compute GL_MODELVIEW matrix by multiplying matrixView and matrixModel
-    // before drawing the object:
-    // ModelView_M = View_M * Model_M
-    // This modelview matrix transforms the objects from object space to eye space.
-    //glLoadMatrixf(matrixModelView.get());
-
-    // draw a teapot and axis after ModelView transform
-    // v' = Mmv * v
-    //drawAxis(4);
+	shaderImage("image1.png");
 
     if(glslReady)
     {
         // use GLSL
-        glUseProgram(progId1);  // 设置渲染模式为颜色渲染
-        //glDisable(GL_COLOR_MATERIAL);
-        //drawTeapot();
+        glUseProgram(progId1);  // 激活着色器 1
+        glDisable(GL_COLOR_MATERIAL);
 
 		GLUquadricObj *objCylinder = gluNewQuadric(); //创建二次曲面对象——-圆柱
-		glTranslatef(0.0, 0.0, 0.0);
-		gluCylinder(objCylinder, 1.0, 0.5, 3, 10, 5);
+		//glTranslatef(0.0, 0.0, 0.0);
+		gluCylinder(objCylinder, 0.5, 0.0, 1, 4, 1);
 
-        //glEnable(GL_COLOR_MATERIAL);
+
+        glEnable(GL_COLOR_MATERIAL);
         glUseProgram(0);
     }
     else
     {
-		MessageBox(NULL, TEXT("渲染失败：glslReady is false!"), TEXT("错误"), 0);
+		MessageBox(NULL, TEXT("着色器编译失败"), TEXT("错误"), 0);
 	}
 
+
+
     glPopMatrix();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 显示 png 图片
+///////////////////////////////////////////////////////////////////////////////
+void ModelGL::shaderImage(const char* filename) {
+
+
+	// Build and compile our shader program
+	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	glCompileShader(vertexShader);
+	// Check for compile time errors
+	GLint success;
+	GLchar infoLog[512];
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+	}
+	// Fragment shader
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	glCompileShader(fragmentShader);
+	// Check for compile time errors
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+	}
+	// Link shaders
+	GLuint shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+	// Check for linking errors
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+	if (!success) {
+		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+	}
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+
+	// Set up vertex data (and buffer(s)) and attribute pointers
+	GLfloat vertices[] = {
+		// Positions          // Colors           // Texture Coords
+		 0.9f,  0.9f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+		 0.9f, -0.9f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+		-0.9f, -0.9f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+		-0.9f,  0.9f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
+	};
+	GLuint indices[] = {  // Note that we start from 0!
+		0, 1, 3, // First Triangle
+		1, 2, 3  // Second Triangle
+	};
+	GLuint VBO, VAO, EBO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	// Position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+	// Color attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
+	// TexCoord attribute
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(2);
+
+	glBindVertexArray(0); // Unbind VAO
+
+
+	// Load and create a texture 
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+	// Set the texture wrapping parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// Set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// Load image, create texture and generate mipmaps
+	int width, height;
+	unsigned char* image = SOIL_load_image(filename, &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	SOIL_free_image_data(image);
+	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+			// Render
+		// Clear the colorbuffer
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	// Bind Texture
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+
+	// Be sure to activate the shader
+	glUseProgram(shaderProgram);
+
+	// Draw the triangle
+	glBindVertexArray(VAO);
+	//glColor4f(0.0f, 0.5f, 0.8f, 1.0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+	//glColor4f(0.8f, 0.5f, 0.0f, 1.0);
+	//glRectf(-0.2f, -0.2f, 0.2f, 0.2f);
+
+	//glUseProgram(0);
+
+	//glutSwapBuffers();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -522,8 +672,8 @@ void ModelGL::drawSub2()
     //// draw the camera绘制相机和锥形显示区
 	if (CAMERAFLAG) {
 
-		drawCamera();
-		drawFrustum(FOV_Y, 1, 1, 10);
+		//drawCamera();
+		//drawFrustum(FOV_Y, 1, 1, 10);
 	}
 
     glPopMatrix();
@@ -1009,12 +1159,12 @@ Matrix4 ModelGL::setOrthoFrustum(float l, float r, float b, float t, float n, fl
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// create glsl programs 创建着色器并链接程序
+// create glsl programs 创建着色器
 // NOTE: used OpenGL core API instead of ARB extension
 ///////////////////////////////////////////////////////////////////////////////
 bool ModelGL::createShaderPrograms()
 {
-    // create 1st shader and program
+    // create 1st shader and program着色器1
     GLuint vsId1 = glCreateShader(GL_VERTEX_SHADER);//顶点着色器
     GLuint fsId1 = glCreateShader(GL_FRAGMENT_SHADER);//片段着色器
     progId1 = glCreateProgram();
@@ -1034,7 +1184,7 @@ bool ModelGL::createShaderPrograms()
     // link program
     glLinkProgram(progId1);
 
-    // create 2nd shader and program
+    // create 2nd shader and program着色器2
     GLuint vsId2 = glCreateShader(GL_VERTEX_SHADER);
     GLuint fsId2 = glCreateShader(GL_FRAGMENT_SHADER);
     progId2 = glCreateProgram();
@@ -1046,6 +1196,9 @@ bool ModelGL::createShaderPrograms()
     // compile shader sources
     glCompileShader(vsId2);
     glCompileShader(fsId2);
+	GLint success21, success22;
+	glGetShaderiv(vsId2, GL_COMPILE_STATUS, &success21);
+	glGetShaderiv(fsId2, GL_COMPILE_STATUS, &success22);
 
     // attach shaders to the program
     glAttachShader(progId2, vsId2);
@@ -1053,12 +1206,14 @@ bool ModelGL::createShaderPrograms()
 
     // link program
     glLinkProgram(progId2);
-
-    // check status
-    GLint linkStatus1, linkStatus2;
+	
+    // check status判断着色器状态
+    GLint linkStatus1, linkStatus2, linkStatus3;
     glGetProgramiv(progId1, GL_LINK_STATUS, &linkStatus1);
     glGetProgramiv(progId2, GL_LINK_STATUS, &linkStatus2);
-    if(linkStatus1 == GL_TRUE && linkStatus2 == GL_TRUE)
+	//glGetProgramiv(progId3, GL_LINK_STATUS, &linkStatus3);
+
+	if (linkStatus1 == GL_TRUE && linkStatus2 == GL_TRUE)
     {
         return true;
     }
@@ -1066,13 +1221,16 @@ bool ModelGL::createShaderPrograms()
     {
         std::cout << "=== GLSL LOG 1 ===\n" << getProgramStatus(progId1) << std::endl;
         std::cout << "=== GLSL LOG 2 ===\n" << getProgramStatus(progId2) << std::endl;
+		//std::cout << "=== GLSL LOG 3 ===\n" << getProgramStatus(progId3) << std::endl;
+
         return false;
     }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // return error message of shader compile status
-// if no errors, it returns empty string
+// if no errors, it returns empty string着色器编译状态日志信息
 ///////////////////////////////////////////////////////////////////////////////
 std::string ModelGL::getShaderStatus(GLuint shader)
 {
@@ -1099,7 +1257,7 @@ std::string ModelGL::getShaderStatus(GLuint shader)
 
 ///////////////////////////////////////////////////////////////////////////////
 // return error message of shader program status
-// if no errors, it returns empty string
+// if no errors, it returns empty string着色器连接状态日志信息
 ///////////////////////////////////////////////////////////////////////////////
 std::string ModelGL::getProgramStatus(GLuint program)
 {

@@ -60,7 +60,7 @@ void ViewGL::closeContext(HWND handle)
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// create OpenGL rendering context创建opengl着色器环境
+// create OpenGL rendering context创建opengl上下文
 ///////////////////////////////////////////////////////////////////////////////
 bool ViewGL::createContext(HWND handle, int colorBits, int depthBits, int stencilBits, int msaaSamples)  //句柄、颜色位数、深度位数、模板位数、抗锯齿样板
 {
@@ -99,10 +99,9 @@ bool ViewGL::createContext(HWND handle, int colorBits, int depthBits, int stenci
 }
 
 
-
 ///////////////////////////////////////////////////////////////////////////////
-// use existing RC instead creating new RC
-// NOTE: the color pixel format must be same将已存在的 RC 设置为新的 RC
+// use existing RC instead creating new RC用已存在的上下文代替新创建的上下文
+// NOTE: the color pixel format must be same
 ///////////////////////////////////////////////////////////////////////////////
 bool ViewGL::setContext(HWND handle, HGLRC rc, int pixelFormat)
 {
@@ -126,7 +125,7 @@ bool ViewGL::setContext(HWND handle, HGLRC rc, int pixelFormat)
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// make the rendering context active for this window 为窗口激活 RC
+// make the rendering context active for this window 为窗口激活上下文
 ///////////////////////////////////////////////////////////////////////////////
 void ViewGL::activateContext()
 {
