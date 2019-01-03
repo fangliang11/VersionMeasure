@@ -243,9 +243,6 @@ static GLint cameraIndices[] = {
 	26, 25, 28, 25, 24
 };
 
-
-
-
 void drawCamera()
 {
 	float shininess = 32.0f;
@@ -260,10 +257,8 @@ void drawCamera()
 	//glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambientColor);
 
 	// set ambient and diffuse color using glColorMaterial (gold-yellow)
-	//glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	//glColor3fv(diffuseColor);
-
-	//glClearColor(0.5f, 0.2f, 0.2f, 1);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glColor3fv(diffuseColor);
 
 	// start to render polygons
 	glEnableClientState(GL_NORMAL_ARRAY);

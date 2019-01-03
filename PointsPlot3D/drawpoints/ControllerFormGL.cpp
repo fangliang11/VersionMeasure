@@ -72,9 +72,9 @@ int ControllerFormGL::create()
 // handle WM_COMMAND 选择数据文件对话框
 ///////////////////////////////////////////////////////////////////////////////
 ReadData myData;
-string filename;
-string selectname;
-wstring selectfilename;
+string filename, imagename1, imagename2;
+string strselectname, strselectimagename1, strselectimagename2;
+wstring wstrselectfilename, wstrselectimagename1, wstrselectimagename2;
 int numX=3, numY=4, numZ=5;  //ViewFormGL 中也有初始化的combobo列选择设置
 
 int ControllerFormGL::command(int id, int command, LPARAM msg)
@@ -109,9 +109,9 @@ int ControllerFormGL::command(int id, int command, LPARAM msg)
 		if (command == BN_CLICKED)   //打开文件按钮
 		{
 			//打开数据文件
-			selectfilename = myData.selectFile();
+			wstrselectfilename = myData.selectFile();
 			model->CTRDRAWFLAG = false; //绘图重置
-			view->setEditText(selectfilename);
+			view->setEditText(wstrselectfilename);
 
 			SELECTFINISHFLAG = true;
 		}
@@ -195,16 +195,56 @@ int ControllerFormGL::command(int id, int command, LPARAM msg)
 			model->backcolorA = *(ptbackcolor + 3);
 		}
 		break;
-	case IDC_RADIO_SETCAMERA:
+	case IDC_RADIO_SETCAMERA:    //显示相机
 		if (command == BN_CLICKED)
 		{
 			model->CAMERAFLAG = true;
 		}
 		break;
-	case IDC_RADIO_HIDECAMERA:
+	case IDC_RADIO_HIDECAMERA:   //隐藏相机
 		if (command == BN_CLICKED)
 		{
 			model->CAMERAFLAG = false;
+		}
+		break;
+	case IDC_BUTTON_IMAGE1SHOW:   //显示图片1
+		if (command == BN_CLICKED)
+		{
+			//model->BUILDIMAGE = true;
+		}
+		break;
+	case IDC_BUTTON_IMAGE1OPEN:   //打开图片1
+		if (command == BN_CLICKED)
+		{
+			strselectimagename1 = myData.selectImage();
+			view->setEditImage1Text(strselectimagename1);
+
+			char* charname1 = (char*)strselectimagename1.c_str();
+			model->imagename1 = charname1;
+
+			model->BUILDIMAGE = false;
+			//model->BUILDBUFFER = true;  //重新创建顶点缓存
+		}
+		break;
+	case IDC_BUTTON_IMAGE2SHOW:   //显示图片2
+		if (command == BN_CLICKED)
+		{
+			model->BUILDIMAGE = true;
+		}
+		break;
+
+	case IDC_BUTTON_IMAGE2OPEN:   //打开图片2
+		if (command == BN_CLICKED)
+		{
+			strselectimagename2 = myData.selectImage();
+			view->setEditImage2Text(strselectimagename2);
+
+			char* charname2 = (char*)strselectimagename2.c_str();
+			model->imagename2 = charname2;
+
+			model->BUILDIMAGE = false;
+			model->BUILDBUFFER = true;  //重新创建顶点缓存
+
 		}
 		break;
 

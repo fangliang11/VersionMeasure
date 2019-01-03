@@ -32,6 +32,8 @@ namespace Win
         void updateMatrices();
 		int getComboSelect(int ComboBoxID);
 		void setEditText(wstring filename);
+		void setEditImage1Text(string filename);
+		void setEditImage2Text(string filename);
 		string getEditText(HWND handle);
 		float *getColorSelect();
 		float *getBackColorSelect();
@@ -83,6 +85,8 @@ namespace Win
 		Win::ComboBox comboboxColor;
 		Win::ComboBox comboboxBackColor;
 		Win::EditBox  editboxFileName;
+		Win::EditBox  editboxImage1Name;
+		Win::EditBox  editboxImage2Name;
         Win::Button buttonAbout;
 		Win::RadioButton setCamera;
 		Win::RadioButton hideCamera;

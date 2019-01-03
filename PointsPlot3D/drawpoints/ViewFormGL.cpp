@@ -135,6 +135,8 @@ void ViewFormGL::initControls(HWND handle)
 	buttonOpenFile.set(handle, IDC_BUTTON_OPEN);
 	buttonReDraw.set(handle, IDC_BUTTON_DRAW);
 	editboxFileName.set(handle, IDC_EDIT_FILENAME);
+	editboxImage1Name.set(handle, IDC_EDIT_IMAGENAME1);
+	editboxImage2Name.set(handle, IDC_EDIT_IMAGENAME2);
 	comboboxCoordinateX.set(handle, IDC_COMBO_X);
 	comboboxCoordinateY.set(handle, IDC_COMBO_Y);
 	comboboxCoordinateZ.set(handle, IDC_COMBO_Z);
@@ -348,6 +350,18 @@ void ViewFormGL::setEditText(wstring filename) {
 	std::wstring widestr = std::wstring(filename.begin(), filename.end());  //  string ת wchar_t
 	const wchar_t* widecstr = widestr.c_str();
 	editboxFileName.setText(widecstr);
+}
+void ViewFormGL::setEditImage1Text(string filename) {
+
+	std::wstring widestr = std::wstring(filename.begin(), filename.end());  //  string ת wchar_t
+	const wchar_t* widecstr = widestr.c_str();
+	editboxImage1Name.setText(widecstr);
+}
+void ViewFormGL::setEditImage2Text(string filename) {
+
+	std::wstring widestr = std::wstring(filename.begin(), filename.end());  //  string ת wchar_t
+	const wchar_t* widecstr = widestr.c_str();
+	editboxImage2Name.setText(widecstr);
 }
 
 

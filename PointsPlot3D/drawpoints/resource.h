@@ -105,10 +105,13 @@
 #define IDC_BUTTON1                     1119
 #define IDC_BUTTON_CALCULATE            1119
 #define IDC_BUTTON_IMAGESHOW            1119
+#define IDC_BUTTON_IMAGE1SHOW           1119
 #define IDC_EDIT1                       1120
 #define IDC_MAX_X                       1120
+#define IDC_EDIT_IMAGENAME1             1120
 #define IDC_EDIT2                       1122
 #define IDC_MIN_X                       1122
+#define IDC_EDIT_IMAGENAME2             1122
 #define IDC_EDIT3                       1123
 #define IDC_MAX_Y                       1123
 #define IDC_EDIT4                       1124
@@ -127,9 +130,13 @@
 #define IDC_COMBO_COLOR                 1135
 #define IDC_COMBO_BACKCOLOR             1136
 #define IDC_BUTTON_IMAGEOPEN            1137
+#define IDC_BUTTON_IMAGE1OPEN           1137
 #define IDC_BUTTON_SAVE                 1139
 #define IDC_SLIDER_COLOR                1140
 #define IDC_STATIC_COLOR                1141
+#define IDC_BUTTON_IMAGE2OPEN           1142
+#define IDC_BUTTON3                     1143
+#define IDC_BUTTON_IMAGE2SHOW           1143
 #define ID_40003                        40003
 #define ID_40004                        40004
 #define ID_40005                        40005
@@ -151,7 +158,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        132
 #define _APS_NEXT_COMMAND_VALUE         40018
-#define _APS_NEXT_CONTROL_VALUE         1142
+#define _APS_NEXT_CONTROL_VALUE         1144
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

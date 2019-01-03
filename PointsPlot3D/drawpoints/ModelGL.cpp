@@ -14,7 +14,10 @@
 #endif
 
 #include "GL/glew.h"
+#pragma comment(lib,"glew32d.lib")  // FANG
+
 #include "SOIL.h"
+#pragma comment(lib,"SOIL.lib")  // FANG
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -98,7 +101,7 @@ void main()
 }
 )";
 
-//  着色器 纹理显示      正常
+//  纹理显示      正常
 const GLchar* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 position;\n"
 "layout (location = 1) in vec3 color;\n"
@@ -109,16 +112,17 @@ const GLchar* vertexShaderSource = "#version 330 core\n"
 "{\n"
 "gl_Position = vec4(position, 1.0f);\n"
 "ourColor = color;\n"
-"TexCoord = texCoord;\n"
+"TexCoord = vec2(texCoord.x, 1.0 - texCoord.y);\n"
 "}\n\0";
 const GLchar* fragmentShaderSource = "#version 330 core\n"
 "in vec3 ourColor;\n"
 "in vec2 TexCoord;\n"
 "out vec4 color;\n"
-"uniform sampler2D ourTexture;\n"
+"uniform sampler2D ourTexture1;\n"
+"uniform sampler2D ourTexture2;\n"
 "void main()\n"
 "{\n"
-"color = texture(ourTexture, TexCoord);\n"
+"color = mix(texture(ourTexture1, TexCoord), texture(ourTexture2, TexCoord), 0.3);\n"
 "}\n\0";
 
 
@@ -126,21 +130,21 @@ const GLchar* fragmentShaderSource = "#version 330 core\n"
 // default ctor
 ///////////////////////////////////////////////////////////////////////////////
 ModelGL::ModelGL() : windowWidth(0), windowHeight(0), povWidth(0),
-                     drawModeChanged(false), drawMode(0),
-                     cameraAngleX(CAMERA_ANGLE_X), cameraAngleY(CAMERA_ANGLE_Y),
-                     cameraDistance(CAMERA_DISTANCE), windowSizeChanged(false),
-                     glslSupported(false), glslReady(false), progId1(0), progId2(0)
+drawModeChanged(false), drawMode(0),
+cameraAngleX(CAMERA_ANGLE_X), cameraAngleY(CAMERA_ANGLE_Y),
+cameraDistance(CAMERA_DISTANCE), windowSizeChanged(false),
+glslSupported(false), glslReady(false), progId1(0), progId2(0)
 {
-    cameraPosition[0] = cameraPosition[1] = cameraPosition[2] = 0;
-    cameraAngle[0] = cameraAngle[1] = cameraAngle[2] = 0;
-    modelPosition[0] = modelPosition[1] = modelPosition[2] = 0;
-    modelAngle[0] = modelAngle[1] = modelAngle[2] = 0;
-    bgColor[0] = bgColor[1] = bgColor[2] = bgColor[3] = 0;
+	cameraPosition[0] = cameraPosition[1] = cameraPosition[2] = 0;
+	cameraAngle[0] = cameraAngle[1] = cameraAngle[2] = 0;
+	modelPosition[0] = modelPosition[1] = modelPosition[2] = 0;
+	modelAngle[0] = modelAngle[1] = modelAngle[2] = 0;
+	bgColor[0] = bgColor[1] = bgColor[2] = bgColor[3] = 0;
 
-    matrixView.identity();
-    matrixModel.identity();
-    matrixModelView.identity();
-    matrixProjection.identity();
+	matrixView.identity();
+	matrixModel.identity();
+	matrixModelView.identity();
+	matrixProjection.identity();
 }
 
 
@@ -188,10 +192,9 @@ void ModelGL::init()
 	// Initialize GLEW to setup the OpenGL Function pointers
 	glewInit();
 
-	AllocConsole();
-	freopen("CONIN$", "r+t", stdin); // 重定向 STDIN
-	freopen("CONOUT$", "w+t", stdout); // 重定向STDOUT
-	//fclose();
+	//AllocConsole();
+	//freopen("CONIN$", "r+t", stdin); // 重定向 STDIN
+	//freopen("CONOUT$", "w+t", stdout); // 重定向STDOUT
 
 }
 
@@ -201,15 +204,19 @@ void ModelGL::init()
 ///////////////////////////////////////////////////////////////////////////////
 bool ModelGL::initShaders()
 {
-    if(!glslReady)
-    {
-        // check extensions
-        glExtension& extension = glExtension::getInstance();
-        glslSupported = extension.isSupported("GL_ARB_shader_objects");
-        if(glslSupported)
-            glslReady = createShaderPrograms();
-    }
-    return glslReady;
+	if (!glslReady)
+	{
+		// check extensions
+		glExtension& extension = glExtension::getInstance();
+		glslSupported = extension.isSupported("GL_ARB_shader_objects");
+		if (glslSupported)
+			glslReady = createShaderPrograms();
+		shaderID = compileshader();
+
+		buildBuffer("backimage2.jpg", "backimage1.jpg", imageareaVAO, imageareaVBO, imageareaEBO, imagetexture1, imagetexture2); //默认显示的图片
+
+	}
+	return glslReady;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -217,6 +224,7 @@ bool ModelGL::initShaders()
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::quit()
 {
+	deleteBuffer();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -224,19 +232,19 @@ void ModelGL::quit()
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::initLights()
 {
-    // set up light colors (ambient, diffuse, specular)
-    GLfloat lightKa[] = {.3f, .3f, .3f, 1.0f};      // ambient light
-    GLfloat lightKd[] = {.8f, .8f, .8f, 1.0f};      // diffuse light
-    GLfloat lightKs[] = {1, 1, 1, 1};               // specular light
-    glLightfv(GL_LIGHT0, GL_AMBIENT, lightKa);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightKd);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, lightKs);
+	// set up light colors (ambient, diffuse, specular)
+	GLfloat lightKa[] = { .3f, .3f, .3f, 1.0f };      // ambient light
+	GLfloat lightKd[] = { .8f, .8f, .8f, 1.0f };      // diffuse light
+	GLfloat lightKs[] = { 1, 1, 1, 1 };               // specular light
+	glLightfv(GL_LIGHT0, GL_AMBIENT, lightKa);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightKd);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, lightKs);
 
-    // position the light in eye space
-    float lightPos[4] = {1, 1, 1, 0};               // directional light  FANG
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+	// position the light in eye space
+	float lightPos[4] = { 1, 1, 1, 0 };               // directional light  FANG
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
-    glEnable(GL_LIGHT0);                            // MUST enable each light source after configuration
+	glEnable(GL_LIGHT0);                            // MUST enable each light source after configuration
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -244,53 +252,53 @@ void ModelGL::initLights()
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::setCamera(float posX, float posY, float posZ, float targetX, float targetY, float targetZ)
 {
-    float forward[4];
-    float up[4];
-    float left[4];
-    float position[4];
-    float invLength;
+	float forward[4];
+	float up[4];
+	float left[4];
+	float position[4];
+	float invLength;
 
-    // determine forward vector (direction reversed because it is camera)
-    forward[0] = posX - targetX;    // x
-    forward[1] = posY - targetY;    // y
-    forward[2] = posZ - targetZ;    // z
-    forward[3] = 0.0f;              // w
-    // normalize it without w-component
-    invLength = 1.0f / sqrtf(forward[0]*forward[0] + forward[1]*forward[1] + forward[2]*forward[2]);
-    forward[0] *= invLength;
-    forward[1] *= invLength;
-    forward[2] *= invLength;
+	// determine forward vector (direction reversed because it is camera)
+	forward[0] = posX - targetX;    // x
+	forward[1] = posY - targetY;    // y
+	forward[2] = posZ - targetZ;    // z
+	forward[3] = 0.0f;              // w
+	// normalize it without w-component
+	invLength = 1.0f / sqrtf(forward[0] * forward[0] + forward[1] * forward[1] + forward[2] * forward[2]);
+	forward[0] *= invLength;
+	forward[1] *= invLength;
+	forward[2] *= invLength;
 
-    // assume up direction is straight up
-    up[0] = 0.0f;   // x
-    up[1] = 1.0f;   // y
-    up[2] = 0.0f;   // z
-    up[3] = 0.0f;   // w
+	// assume up direction is straight up
+	up[0] = 0.0f;   // x
+	up[1] = 1.0f;   // y
+	up[2] = 0.0f;   // z
+	up[3] = 0.0f;   // w
 
-    // compute left vector with cross product
-    left[0] = up[1]*forward[2] - up[2]*forward[1];  // x
-    left[1] = up[2]*forward[0] - up[0]*forward[2];  // y
-    left[2] = up[0]*forward[1] - up[1]*forward[0];  // z
-    left[3] = 1.0f;                                 // w
+	// compute left vector with cross product
+	left[0] = up[1] * forward[2] - up[2] * forward[1];  // x
+	left[1] = up[2] * forward[0] - up[0] * forward[2];  // y
+	left[2] = up[0] * forward[1] - up[1] * forward[0];  // z
+	left[3] = 1.0f;                                 // w
 
-    // re-compute orthogonal up vector
-    up[0] = forward[1]*left[2] - forward[2]*left[1];    // x
-    up[1] = forward[2]*left[0] - forward[0]*left[2];    // y
-    up[2] = forward[0]*left[1] - forward[1]*left[0];    // z
-    up[3] = 0.0f;                                       // w
+	// re-compute orthogonal up vector
+	up[0] = forward[1] * left[2] - forward[2] * left[1];    // x
+	up[1] = forward[2] * left[0] - forward[0] * left[2];    // y
+	up[2] = forward[0] * left[1] - forward[1] * left[0];    // z
+	up[3] = 0.0f;                                       // w
 
-    // camera position
-    position[0] = -posX;
-    position[1] = -posY;
-    position[2] = -posZ;
-    position[3] = 1.0f;
+	// camera position
+	position[0] = -posX;
+	position[1] = -posY;
+	position[2] = -posZ;
+	position[3] = 1.0f;
 
-    // copy axis vectors to matrix
-    matrixView.identity();
-    matrixView.setColumn(0, left);
-    matrixView.setColumn(1, up);
-    matrixView.setColumn(2, forward);
-    matrixView.setColumn(3, position);
+	// copy axis vectors to matrix
+	matrixView.identity();
+	matrixView.setColumn(0, left);
+	matrixView.setColumn(1, up);
+	matrixView.setColumn(2, forward);
+	matrixView.setColumn(3, position);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -298,19 +306,19 @@ void ModelGL::setCamera(float posX, float posY, float posZ, float targetX, float
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::setWindowSize(int width, int height)
 {
-    // assign the width/height of viewport
-    windowWidth = width;
-    windowHeight = height;
+	// assign the width/height of viewport
+	windowWidth = width;
+	windowHeight = height;
 
-    // compute dim for point of view screen计算平面点的尺寸
-    povWidth = windowWidth / 2;
-    if(povWidth > windowHeight)
-    {
-        // if it is wider than height, reduce to the height (make it square)设置为正方形
-        povWidth = windowHeight;
-    }
+	// compute dim for point of view screen计算平面点的尺寸
+	povWidth = windowWidth / 2;
+	if (povWidth > windowHeight)
+	{
+		// if it is wider than height, reduce to the height (make it square)设置为正方形
+		povWidth = windowHeight;
+	}
 
-    windowSizeChanged = true;
+	windowSizeChanged = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -319,17 +327,17 @@ void ModelGL::setWindowSize(int width, int height)
 void ModelGL::setViewport(int x, int y, int w, int h)
 {
 
-    // set viewport to be the entire window
-    glViewport((GLsizei)x, (GLsizei)y, (GLsizei)w, (GLsizei)h);
+	// set viewport to be the entire window
+	glViewport((GLsizei)x, (GLsizei)y, (GLsizei)w, (GLsizei)h);
 
-    // set perspective viewing frustum
-    Matrix4 matrix = setFrustum(FOV_Y, (float)(w)/h, NEAR_PLANE, FAR_PLANE); // FOV, AspectRatio, NearClip, FarClip
+	// set perspective viewing frustum
+	Matrix4 matrix = setFrustum(FOV_Y, (float)(w) / h, NEAR_PLANE, FAR_PLANE); // FOV, AspectRatio, NearClip, FarClip
 
-    // copy projection matrix to OpenGL
-    glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(matrix.get());
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+	// copy projection matrix to OpenGL
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(matrix.get());
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -337,62 +345,58 @@ void ModelGL::setViewport(int x, int y, int w, int h)
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::setViewportSub(int x, int y, int width, int height, float nearPlane, float farPlane)
 {
-    // set viewport
-    glViewport(x, y, width, height);
+	// set viewport
+	glViewport(x, y, width, height);
 	//glViewport(0, 0, 500, 500);
-    glScissor(x, y, width, height);  //定义裁剪窗口
+	glScissor(x, y, width, height);  //定义裁剪窗口
 
-    // set perspective viewing frustum
-    Matrix4 matrix = setFrustum(FOV_Y, (float)(width)/height, nearPlane, farPlane); // FOV, AspectRatio, NearClip, FarClip
+	// set perspective viewing frustum
+	Matrix4 matrix = setFrustum(FOV_Y, (float)(width) / height, nearPlane, farPlane); // FOV, AspectRatio, NearClip, FarClip
 
-    // copy projection matrix to OpenGL
-    glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(matrix.get());
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+	// copy projection matrix to OpenGL
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(matrix.get());
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // draw 2D/3D scene
 ///////////////////////////////////////////////////////////////////////////////
-
-
 void ModelGL::draw()
 {
-
-
 	drawSub1();  //左视口
-    //drawSub2();  //右视口
+	drawSub2();  //右视口
 
-    // post frame
-    if(windowSizeChanged)
-    {
-        setViewport(0, 0, windowWidth, windowHeight);
-        windowSizeChanged = false;
-    }
+	// post frame
+	if (windowSizeChanged)
+	{
+		setViewport(0, 0, windowWidth, windowHeight);
+		windowSizeChanged = false;
+	}
 
-    if(drawModeChanged)
-    {
-        if(drawMode == 0)           // fill mode填充模式
-        {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            glEnable(GL_DEPTH_TEST);
-            glEnable(GL_CULL_FACE);
-        }
-        else if(drawMode == 1)      // wireframe mode线框模式
-        {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            //glDisable(GL_DEPTH_TEST);
-            glDisable(GL_CULL_FACE);
-        }
-        else if(drawMode == 2)      // point mode点阵模式
-        {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-            //glDisable(GL_DEPTH_TEST);
-            glDisable(GL_CULL_FACE);
-        }
-        drawModeChanged = false;
-    }
+	if (drawModeChanged)
+	{
+		if (drawMode == 0)           // fill mode填充模式
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glEnable(GL_DEPTH_TEST);
+			glEnable(GL_CULL_FACE);
+		}
+		else if (drawMode == 1)      // wireframe mode线框模式
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			//glDisable(GL_DEPTH_TEST);
+			glDisable(GL_CULL_FACE);
+		}
+		else if (drawMode == 2)      // point mode点阵模式
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+			//glDisable(GL_DEPTH_TEST);
+			glDisable(GL_CULL_FACE);
+		}
+		drawModeChanged = false;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -400,70 +404,56 @@ void ModelGL::draw()
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::drawSub1()
 {
-    setViewportSub(0, 0, windowWidth, windowHeight, 1, 10);//设置子窗口视口和透视
+	setViewportSub(0, 0, windowWidth, windowHeight, 1, 10);//设置子窗口视口和透视
 	// clear buffer (whole area)清除整个显示区缓存
-    glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-    // make left viewport square viewport设置左视口为矩形
-    if(windowHeight > povWidth)
-        setViewportSub(0, (windowHeight - povWidth)/2, povWidth, povWidth, 1, 10);
-    else
-        setViewportSub((povWidth - windowHeight)/2, 0, windowHeight, windowHeight, 1, 10);
-        //setViewportSub((halfWidth - windowHeight)/2, 0, windowHeight, windowHeight, 1, 10);
+	// make left viewport square viewport设置左视口为矩形
+	if (windowHeight > povWidth)
+		setViewportSub(0, (windowHeight - povWidth) / 2, povWidth, povWidth, 1, 10);
+	else
+		setViewportSub((povWidth - windowHeight) / 2, 0, windowHeight, windowHeight, 1, 10);
+	//setViewportSub((halfWidth - windowHeight)/2, 0, windowHeight, windowHeight, 1, 10);
 
-    // clear buffer (square area)
-    glClearColor(0.5f, 0.2f, 0.2f, 1);  //设置左视口背景
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	
-
-
-    glPushMatrix();
-
-    // set view matrix ========================================================
-    // copy the matrix to OpenGL GL_MODELVIEW matrix
-    // See updateViewMatrix() how matrixView is constructed. The equivalent
-    // OpenGL calls are;
-    //    glLoadIdentity();
-    //    glRotatef(-cameraAngle[2], 0, 0, 1); // roll (Z)
-    //    glRotatef(-cameraAngle[1], 0, 1, 0); // heading (Y)
-    //    glRotatef(-cameraAngle[0], 1, 0, 0); // pitch (X)
-    //    glTranslatef(-cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
-
-
-    glLoadMatrixf(matrixView.get()); //加载视图矩阵
-
-	shaderImage("image1.png");
-
-    if(glslReady)
-    {
-        // use GLSL
-        glUseProgram(progId1);  // 激活着色器 1
-        glDisable(GL_COLOR_MATERIAL);
-
-		GLUquadricObj *objCylinder = gluNewQuadric(); //创建二次曲面对象——-圆柱
-		//glTranslatef(0.0, 0.0, 0.0);
-		gluCylinder(objCylinder, 0.5, 0.0, 1, 4, 1);
-
-
-        glEnable(GL_COLOR_MATERIAL);
-        glUseProgram(0);
-    }
-    else
-    {
-		MessageBox(NULL, TEXT("着色器编译失败"), TEXT("错误"), 0);
+// clear buffer (square area)
+	glClearColor(0.2f, 0.2f, 0.2f, 1);  //设置左视口背景
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	   
+	if (BUILDBUFFER) {
+		buildBuffer(imagename1, imagename2, imageareaVAO, imageareaVBO, imageareaEBO, imagetexture1, imagetexture2); // 创建缓存
+		BUILDBUFFER = false;
 	}
 
+	if (BUILDIMAGE) {
+		shaderImage();    //绘制纹理图
+	}
 
+	glPushMatrix();
+	glLoadMatrixf(matrixView.get()); //加载视图矩阵
+	if (glslReady)
+	{
+		// use GLSL
+		glUseProgram(progId2);  // 激活着色器2
+		glDisable(GL_COLOR_MATERIAL);
 
-    glPopMatrix();
+		//GLUquadricObj *objCylinder = gluNewQuadric(); //创建二次曲面对象——-圆柱
+		//gluCylinder(objCylinder, 3.0, 0.0, 1, 20, 1);
+
+		glEnable(GL_COLOR_MATERIAL);
+		glUseProgram(0);
+	}
+	else
+	{
+		MessageBox(NULL, TEXT("着色器编译失败"), TEXT("错误"), 0);
+	}
+	glPopMatrix();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // 显示 png 图片
 ///////////////////////////////////////////////////////////////////////////////
-void ModelGL::shaderImage(const char* filename) {
-
+GLuint ModelGL::compileshader() {
 
 	// Build and compile our shader program
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -503,88 +493,129 @@ void ModelGL::shaderImage(const char* filename) {
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
+	return shaderProgram;
+}
+
+void ModelGL::buildBuffer(char* filename1, char* filename2, GLuint &VAO, GLuint &VBO, GLuint &EBO, GLuint &texture1, GLuint &texture2) {
 
 	// Set up vertex data (and buffer(s)) and attribute pointers
 	GLfloat vertices[] = {
 		// Positions          // Colors           // Texture Coords
-		 0.9f,  0.9f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
-		 0.9f, -0.9f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
-		-0.9f, -0.9f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
-		-0.9f,  0.9f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
+		 1.0f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+		 1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+		-1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+		-1.0f,  1.0f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
 	};
 	GLuint indices[] = {  // Note that we start from 0!
 		0, 1, 3, // First Triangle
 		1, 2, 3  // Second Triangle
 	};
-	GLuint VBO, VAO, EBO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+	//GLuint VBO, VAO, EBO;
+	//GLuint VBO, EBO;
 
+	glGenVertexArrays(1, &VAO);  //创建顶点数组对象
+	glGenBuffers(1, &VBO);   //使用glGenBuffers函数和一个缓冲ID生成一个VBO对象
+	glGenBuffers(1, &EBO);  //索引缓冲对象
+
+	//1. 绑定VAO
 	glBindVertexArray(VAO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	// 2. 复制顶点数组到缓冲中供OpenGL使用
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);    //把新创建的缓冲VBO绑定到GL_ARRAY_BUFFER目标上
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);    //把之前定义的顶点数据复制到缓冲的内存中,   GL_STATIC_DRAW ：数据不会或几乎不会改变
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);  //把索引复制到缓冲里
 
-	// Position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-	// Color attribute
+	// 3. 设置顶点属性指针
+	// Position attribute位置属性
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);  //告诉OpenGL该如何解析顶点数据（应用到逐个顶点属性上）
+	glEnableVertexAttribArray(0);   //以顶点属性位置值作为参数，启用顶点属性；顶点属性默认是禁用的
+	// Color attribute颜色属性
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
-	// TexCoord attribute
+	// TexCoord attribute纹理属性
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(2);
 
+	//4. 解绑VAO
 	glBindVertexArray(0); // Unbind VAO
 
 
-	// Load and create a texture 
-	GLuint texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
-	// Set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
+	// Load and create a texture 加载和创建纹理
+	//GLuint texture1;
+	//GLuint texture2;
+	// ====================
+	// Texture 1  纹理1
+	// ====================
+	glGenTextures(1, &texture1);   //生成纹理的数量/用于存储的数组
+	glBindTexture(GL_TEXTURE_2D, texture1); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object绑定纹理到数组
+	// Set our texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// Set texture filtering parameters
+	// Set texture filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Load image, create texture and generate mipmaps
+	// Load, create texture and generate mipmaps
 	int width, height;
-	unsigned char* image = SOIL_load_image(filename, &width, &height, 0, SOIL_LOAD_RGB);
+	unsigned char* image = SOIL_load_image(filename1, &width, &height, 0, SOIL_LOAD_RGB);  // 加载图片
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);   //使用图片生成纹理
+	glGenerateMipmap(GL_TEXTURE_2D);    //生成多级渐远纹理
+	SOIL_free_image_data(image);     //释放图像内存
+	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.  解绑纹理
+	// ===================
+	// Texture 2  纹理2
+	// ===================
+	glGenTextures(1, &texture2);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+	// Set our texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// Set texture filtering
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// Load, create texture and generate mipmaps
+	image = SOIL_load_image(filename2, &width, &height, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image);
-	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
-			// Render
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+}
+
+void ModelGL::shaderImage() {
+	// Render
 		// Clear the colorbuffer
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	// Bind Texture
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-
+	// 5. 绘制物体
 	// Be sure to activate the shader
-	glUseProgram(shaderProgram);
+	glUseProgram(shaderID);
+
+	// Bind Textures using texture units
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, imagetexture1);
+	glUniform1i(glGetUniformLocation(shaderID, "ourTexture1"), 0);  //Uniform是一种从CPU中的应用向GPU中的着色器发送数据的方式
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, imagetexture2);
+	glUniform1i(glGetUniformLocation(shaderID, "ourTexture2"), 1);
 
 	// Draw the triangle
-	glBindVertexArray(VAO);
-	//glColor4f(0.0f, 0.5f, 0.8f, 1.0);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(imageareaVAO);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);  //绘图模式/顶点个数/索引类型/EBO中的偏移量
 	glBindVertexArray(0);
-
-	//glColor4f(0.8f, 0.5f, 0.0f, 1.0);
-	//glRectf(-0.2f, -0.2f, 0.2f, 0.2f);
 
 	//glUseProgram(0);
 
-	//glutSwapBuffers();
 }
 
+void ModelGL::deleteBuffer() {
+	glDeleteVertexArrays(1, &imageareaVAO);
+	glDeleteBuffers(1, &imageareaVBO);
+	glDeleteBuffers(1, &imageareaEBO);
+}
 ///////////////////////////////////////////////////////////////////////////////
 // draw right window (3rd person view)  绘制右侧窗口------三维点云图显示
 ///////////////////////////////////////////////////////////////////////////////
@@ -592,36 +623,36 @@ void ModelGL::shaderImage(const char* filename) {
 void ModelGL::drawSub2()
 {
 
-    // set right viewport
-    setViewportSub(povWidth, 0, windowWidth-povWidth, windowHeight, NEAR_PLANE, FAR_PLANE);
+	// set right viewport
+	setViewportSub(povWidth, 0, windowWidth - povWidth, windowHeight, NEAR_PLANE, FAR_PLANE);
 
-    // it is done in drawSub1(), no need to clear buffer
-    //glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);   // background color
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	// it is done in drawSub1(), no need to clear buffer
+	glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);   // background color
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	glClearColor(0.5f, 0.5f, 0.5f, 1);  //设置右视口背景
 	glClearColor(backcolorR, backcolorG, backcolorB, backcolorA);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-    glPushMatrix();
+	glPushMatrix();
 
-    // First, transform the camera (viewing matrix) from world space to eye space
-    Matrix4 matView, matModel, matModelView;
-    matView.identity();
-    matView.rotateY(cameraAngleY);
-    matView.rotateX(cameraAngleX);
-    matView.translate(0, 0, -cameraDistance);
-    glLoadMatrixf(matView.get());
+	// First, transform the camera (viewing matrix) from world space to eye space
+	Matrix4 matView, matModel, matModelView;
+	matView.identity();
+	matView.rotateY(cameraAngleY);
+	matView.rotateX(cameraAngleX);
+	matView.translate(0, 0, -cameraDistance);
+	glLoadMatrixf(matView.get());
 
-    // transform
-    matModel.rotateZ(modelAngle[2]);
-    matModel.rotateY(modelAngle[1]);
-    matModel.rotateX(modelAngle[0]);
-    matModel.translate(modelPosition[0], modelPosition[1], modelPosition[2]);
-    matModelView = matView * matModel;
-    glLoadMatrixf(matModelView.get());
+	// transform
+	matModel.rotateZ(modelAngle[2]);
+	matModel.rotateY(modelAngle[1]);
+	matModel.rotateX(modelAngle[0]);
+	matModel.translate(modelPosition[0], modelPosition[1], modelPosition[2]);
+	matModelView = matView * matModel;
+	glLoadMatrixf(matModelView.get());
 
-	// 绘制网格
+	//	// 绘制网格
 	coordpoint cpoint1 = { AXES_LEN, AXES_LEN, 0 };
 	coordpoint cpoint2 = { -AXES_LEN, -AXES_LEN, 0 };
 	coordpoint cpoint3 = { AXES_LEN, AXES_LEN, 0 };
@@ -630,53 +661,48 @@ void ModelGL::drawSub2()
 	coordpoint cpoint6 = { -AXES_LEN, -AXES_LEN, 0 };
 	drawGrid(cpoint1, cpoint2, cpoint3, cpoint4, cpoint5, cpoint6, 20);
 
-    // 绘制坐标轴
-    drawAxis(5);
+	// 绘制坐标轴
+	drawAxis(5);
 
 	//渲染条件具备，绘制点云
-    if(glslReady && CTRDRAWFLAG)
-    {
-        glUseProgram(progId1);
-        glDisable(GL_COLOR_MATERIAL);
-		
-		glColor4f(imagecolorR, imagecolorG, imagecolorB, imagecolorA);
-		drawPoints(3);   //增加点云
+	if (glslReady)
+	{
+		glUseProgram(progId1);
+		glDisable(GL_COLOR_MATERIAL);
 
-        glEnable(GL_COLOR_MATERIAL);
-        glUseProgram(0);
+
+
+		if (CTRDRAWFLAG) {
+			glColor4f(imagecolorR, imagecolorG, imagecolorB, imagecolorA);
+			drawPoints(3);   //增加点云
+		}
+
+		//// draw the camera绘制相机和锥形显示区
+		if (CAMERAFLAG) {
+
+			// transform camera object移动摄像物体
+			matModel.identity();
+			matModel.rotateZ(-cameraAngle[2]);
+			matModel.rotateY(cameraAngle[1]);
+			matModel.rotateX(-cameraAngle[0]);
+			matModel.translate(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
+			matModelView = matView * matModel;
+			glLoadMatrixf(matModelView.get());
+
+			drawCamera();
+			drawFrustum(FOV_Y, 1, 1, 10);
+		}
+
+
+
+		glEnable(GL_COLOR_MATERIAL);
+		glUseProgram(0);
 	}
-    else if (!glslReady) {
-		MessageBox(NULL, TEXT("渲染失败：glslReady is false!"), TEXT("错误"), 0);
-    }
-
-    //// draw camera axis绘制相机坐标系
-    //matModel.identity();
-    //matModel.rotateY(180);  // facing to -Z axis
-    //matModel.rotateZ(-cameraAngle[2]);
-    //matModel.rotateY(cameraAngle[1]);
-    //matModel.rotateX(-cameraAngle[0]);
-    //matModel.translate(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
-    //matModelView = matView * matModel;
-    //glLoadMatrixf(matModelView.get());
-    //drawAxis(0.75f);
-
-    // transform camera object移动摄像物体
-    matModel.identity();
-    matModel.rotateZ(-cameraAngle[2]);
-    matModel.rotateY(cameraAngle[1]);
-    matModel.rotateX(-cameraAngle[0]);
-    matModel.translate(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
-    matModelView = matView * matModel;
-    glLoadMatrixf(matModelView.get());
-
-    //// draw the camera绘制相机和锥形显示区
-	if (CAMERAFLAG) {
-
-		//drawCamera();
-		//drawFrustum(FOV_Y, 1, 1, 10);
+	else if (!glslReady) {
+		MessageBox(NULL, TEXT("着色器编译失败"), TEXT("错误"), 0);
 	}
 
-    glPopMatrix();
+	glPopMatrix();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -836,9 +862,6 @@ void ModelGL::drawGrid(coordpoint& pt1, coordpoint& pt2, coordpoint& pt3, coordp
 	}
 	glEnd();
 	glPopMatrix();
-
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_LIGHTING);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -879,11 +902,11 @@ void drawCNString(const char* str)
 
 void ModelGL::drawAxis(float size)
 {
-    glDepthFunc(GL_ALWAYS);     // to avoid visual artifacts with grid lines
-    glDisable(GL_LIGHTING);
-    glPushMatrix();             //NOTE: There is a bug on Mac misbehaviours of
-                                //      the light position when you draw GL_LINES
-                                //      and GL_POINTS. remember the matrix.
+	glDepthFunc(GL_ALWAYS);     // to avoid visual artifacts with grid lines
+	glDisable(GL_LIGHTING);
+	glPushMatrix();             //NOTE: There is a bug on Mac misbehaviours of
+								//      the light position when you draw GL_LINES
+								//      and GL_POINTS. remember the matrix.
 
 	GLUquadricObj *objCylinder = gluNewQuadric(); //创建二次曲面对象——-圆柱
 	glColor3f(0.0f, 0.0f, 1.0f);
@@ -891,8 +914,8 @@ void ModelGL::drawAxis(float size)
 	gluCylinder(objCylinder, 0.03, 0.03, 2.1*size, 10, 5);//Z_轴_蓝色
 	glTranslatef(0, 0, 2.1*size);
 	gluCylinder(objCylinder, 0.08, 0.0, 0.1*size, 10, 5);//Z_箭头
-	glRasterPos3f(-0.3, 0.3, 0);
-	drawCNString("ZZ ");// Print GL Text ToThe Screen
+	glRasterPos3f(-0.3, 0.3, 0.2);
+	drawCNString("Z ");// Print GL Text ToThe Screen
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glTranslatef(0, 0, -2.1*size);
 	glRotatef(-90, 1.0, 0.0, 0.0);
@@ -911,10 +934,10 @@ void ModelGL::drawAxis(float size)
 	drawCNString("X ");// Print GL Text ToThe Screen
 
 
-    // restore default settings
-    glPopMatrix();
-    glEnable(GL_LIGHTING);
-    glDepthFunc(GL_LEQUAL);
+	// restore default settings
+	glPopMatrix();
+	glEnable(GL_LIGHTING);
+	glDepthFunc(GL_LEQUAL);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -922,93 +945,91 @@ void ModelGL::drawAxis(float size)
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::drawFrustum(float fovY, float aspectRatio, float nearPlane, float farPlane)
 {
-    float tangent = tanf(fovY/2 * DEG2RAD);
-    float nearHeight = nearPlane * tangent;
-    float nearWidth = nearHeight * aspectRatio;
-    float farHeight = farPlane * tangent;
-    float farWidth = farHeight * aspectRatio;
+	float tangent = tanf(fovY / 2 * DEG2RAD);
+	float nearHeight = nearPlane * tangent;
+	float nearWidth = nearHeight * aspectRatio;
+	float farHeight = farPlane * tangent;
+	float farWidth = farHeight * aspectRatio;
 
-    // compute 8 vertices of the frustum
-    float vertices[8][3];
-    // near top right
-    vertices[0][0] = nearWidth;     vertices[0][1] = nearHeight;    vertices[0][2] = -nearPlane;
-    // near top left
-    vertices[1][0] = -nearWidth;    vertices[1][1] = nearHeight;    vertices[1][2] = -nearPlane;
-    // near bottom left
-    vertices[2][0] = -nearWidth;    vertices[2][1] = -nearHeight;   vertices[2][2] = -nearPlane;
-    // near bottom right
-    vertices[3][0] = nearWidth;     vertices[3][1] = -nearHeight;   vertices[3][2] = -nearPlane;
-    // far top right
-    vertices[4][0] = farWidth;      vertices[4][1] = farHeight;     vertices[4][2] = -farPlane;
-    // far top left
-    vertices[5][0] = -farWidth;     vertices[5][1] = farHeight;     vertices[5][2] = -farPlane;
-    // far bottom left
-    vertices[6][0] = -farWidth;     vertices[6][1] = -farHeight;    vertices[6][2] = -farPlane;
-    // far bottom right
-    vertices[7][0] = farWidth;      vertices[7][1] = -farHeight;    vertices[7][2] = -farPlane;
+	// compute 8 vertices of the frustum
+	float vertices[8][3];
+	// near top right
+	vertices[0][0] = nearWidth;     vertices[0][1] = nearHeight;    vertices[0][2] = -nearPlane;
+	// near top left
+	vertices[1][0] = -nearWidth;    vertices[1][1] = nearHeight;    vertices[1][2] = -nearPlane;
+	// near bottom left
+	vertices[2][0] = -nearWidth;    vertices[2][1] = -nearHeight;   vertices[2][2] = -nearPlane;
+	// near bottom right
+	vertices[3][0] = nearWidth;     vertices[3][1] = -nearHeight;   vertices[3][2] = -nearPlane;
+	// far top right
+	vertices[4][0] = farWidth;      vertices[4][1] = farHeight;     vertices[4][2] = -farPlane;
+	// far top left
+	vertices[5][0] = -farWidth;     vertices[5][1] = farHeight;     vertices[5][2] = -farPlane;
+	// far bottom left
+	vertices[6][0] = -farWidth;     vertices[6][1] = -farHeight;    vertices[6][2] = -farPlane;
+	// far bottom right
+	vertices[7][0] = farWidth;      vertices[7][1] = -farHeight;    vertices[7][2] = -farPlane;
 
-    float colorLine1[4] = { 0.7f, 0.7f, 0.7f, 0.7f };
-    float colorLine2[4] = { 0.2f, 0.2f, 0.2f, 0.7f };
-    float colorPlane[4] = { 0.5f, 0.5f, 0.5f, 0.5f };
+	float colorLine1[4] = { 0.7f, 0.7f, 0.7f, 0.7f };
+	float colorLine2[4] = { 0.2f, 0.2f, 0.2f, 0.7f };
+	float colorPlane[4] = { 0.5f, 0.5f, 0.5f, 0.5f };
 
-    glDisable(GL_LIGHTING);
-    glDisable(GL_CULL_FACE);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_CULL_FACE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // draw the edges around frustum
-    glBegin(GL_LINES);
-    glColor4fv(colorLine2);
-    glVertex3f(0, 0, 0);      // near plane
-    glColor4fv(colorLine1);
-    glVertex3fv(vertices[4]);
+	// draw the edges around frustum
+	glBegin(GL_LINES);
+	glColor4fv(colorLine2);
+	glVertex3f(0, 0, 0);      // near plane
+	glColor4fv(colorLine1);
+	glVertex3fv(vertices[4]);
 
-    glColor4fv(colorLine2);
-    glVertex3f(0, 0, 0);
-    glColor4fv(colorLine1);
-    glVertex3fv(vertices[5]);
+	glColor4fv(colorLine2);
+	glVertex3f(0, 0, 0);
+	glColor4fv(colorLine1);
+	glVertex3fv(vertices[5]);
 
-    glColor4fv(colorLine2);
-    glVertex3f(0, 0, 0);     //far plane
-    glColor4fv(colorLine1);
-    glVertex3fv(vertices[6]);
+	glColor4fv(colorLine2);
+	glVertex3f(0, 0, 0);     //far plane
+	glColor4fv(colorLine1);
+	glVertex3fv(vertices[6]);
 
-    glColor4fv(colorLine2);
-    glVertex3f(0, 0, 0);
-    glColor4fv(colorLine1);
-    glVertex3fv(vertices[7]);
-    glEnd();
+	glColor4fv(colorLine2);
+	glVertex3f(0, 0, 0);
+	glColor4fv(colorLine1);
+	glVertex3fv(vertices[7]);
+	glEnd();
 
-    glColor4fv(colorLine1);
-    glBegin(GL_LINE_LOOP);
-    glVertex3fv(vertices[4]);
-    glVertex3fv(vertices[5]);
-    glVertex3fv(vertices[6]);
-    glVertex3fv(vertices[7]);
-    glEnd();
+	glColor4fv(colorLine1);
+	glBegin(GL_LINE_LOOP);
+	glVertex3fv(vertices[4]);
+	glVertex3fv(vertices[5]);
+	glVertex3fv(vertices[6]);
+	glVertex3fv(vertices[7]);
+	glEnd();
 
-    glColor4fv(colorLine1);
-    glBegin(GL_LINE_LOOP);
-    glVertex3fv(vertices[0]);
-    glVertex3fv(vertices[1]);
-    glVertex3fv(vertices[2]);
-    glVertex3fv(vertices[3]);
-    glEnd();
+	glColor4fv(colorLine1);
+	glBegin(GL_LINE_LOOP);
+	glVertex3fv(vertices[0]);
+	glVertex3fv(vertices[1]);
+	glVertex3fv(vertices[2]);
+	glVertex3fv(vertices[3]);
+	glEnd();
 
-    // draw near and far plane
-    glColor4fv(colorPlane);
-    glBegin(GL_QUADS);
-    glVertex3fv(vertices[0]);
-    glVertex3fv(vertices[1]);
-    glVertex3fv(vertices[2]);
-    glVertex3fv(vertices[3]);
-    glVertex3fv(vertices[4]);
-    glVertex3fv(vertices[5]);
-    glVertex3fv(vertices[6]);
-    glVertex3fv(vertices[7]);
-    glEnd();
+	// draw near and far plane
+	glColor4fv(colorPlane);
+	glBegin(GL_QUADS);
+	glVertex3fv(vertices[0]);
+	glVertex3fv(vertices[1]);
+	glVertex3fv(vertices[2]);
+	glVertex3fv(vertices[3]);
+	glVertex3fv(vertices[4]);
+	glVertex3fv(vertices[5]);
+	glVertex3fv(vertices[6]);
+	glVertex3fv(vertices[7]);
+	glEnd();
 
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_LIGHTING);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1016,14 +1037,14 @@ void ModelGL::drawFrustum(float fovY, float aspectRatio, float nearPlane, float 
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::setViewMatrix(float x, float y, float z, float pitch, float heading, float roll)
 {
-    cameraPosition[0] = x;
-    cameraPosition[1] = y;
-    cameraPosition[2] = z;
-    cameraAngle[0] = pitch;
-    cameraAngle[1] = heading;
-    cameraAngle[2] = roll;
+	cameraPosition[0] = x;
+	cameraPosition[1] = y;
+	cameraPosition[2] = z;
+	cameraAngle[0] = pitch;
+	cameraAngle[1] = heading;
+	cameraAngle[2] = roll;
 
-    updateViewMatrix();
+	updateViewMatrix();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1031,14 +1052,14 @@ void ModelGL::setViewMatrix(float x, float y, float z, float pitch, float headin
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::setModelMatrix(float x, float y, float z, float rx, float ry, float rz)
 {
-    modelPosition[0] = x;
-    modelPosition[1] = y;
-    modelPosition[2] = z;
-    modelAngle[0] = rx;
-    modelAngle[1] = ry;
-    modelAngle[2] = rz;
+	modelPosition[0] = x;
+	modelPosition[1] = y;
+	modelPosition[2] = z;
+	modelAngle[0] = rx;
+	modelAngle[1] = ry;
+	modelAngle[2] = rz;
 
-    updateModelMatrix();
+	updateModelMatrix();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1046,30 +1067,30 @@ void ModelGL::setModelMatrix(float x, float y, float z, float rx, float ry, floa
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::updateViewMatrix()
 {
-    // transform the camera (viewing matrix) from world space to eye space
-    // Notice translation nd heading values are negated,
-    // because we move the whole scene with the inverse of camera transform
-    // ORDER: translation -> rotZ -> rotY ->rotX
-    matrixView.identity();
-    matrixView.translate(-cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
-    matrixView.rotateZ(cameraAngle[2]);     // roll
-    matrixView.rotateY(-cameraAngle[1]);    // heading
-    matrixView.rotateX(cameraAngle[0]);     // pitch
+	// transform the camera (viewing matrix) from world space to eye space
+	// Notice translation nd heading values are negated,
+	// because we move the whole scene with the inverse of camera transform
+	// ORDER: translation -> rotZ -> rotY ->rotX
+	matrixView.identity();
+	matrixView.translate(-cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
+	matrixView.rotateZ(cameraAngle[2]);     // roll
+	matrixView.rotateY(-cameraAngle[1]);    // heading
+	matrixView.rotateX(cameraAngle[0]);     // pitch
 
-    matrixModelView = matrixView * matrixModel;
+	matrixModelView = matrixView * matrixModel;
 }
 
 void ModelGL::updateModelMatrix()
 {
-    // transform objects from object space to world space
-    // ORDER: rotZ -> rotY -> rotX -> translation
-    matrixModel.identity();
-    matrixModel.rotateZ(modelAngle[2]);
-    matrixModel.rotateY(modelAngle[1]);
-    matrixModel.rotateX(modelAngle[0]);
-    matrixModel.translate(modelPosition[0], modelPosition[1], modelPosition[2]);
+	// transform objects from object space to world space
+	// ORDER: rotZ -> rotY -> rotX -> translation
+	matrixModel.identity();
+	matrixModel.rotateZ(modelAngle[2]);
+	matrixModel.rotateY(modelAngle[1]);
+	matrixModel.rotateX(modelAngle[0]);
+	matrixModel.translate(modelPosition[0], modelPosition[1], modelPosition[2]);
 
-    matrixModelView = matrixView * matrixModel;
+	matrixModelView = matrixView * matrixModel;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1077,10 +1098,10 @@ void ModelGL::updateModelMatrix()
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::rotateCamera(int x, int y)
 {
-    cameraAngleY += (x - mouseX);
-    cameraAngleX += (y - mouseY);
-    mouseX = x;
-    mouseY = y;
+	cameraAngleY += (x - mouseX);
+	cameraAngleX += (y - mouseY);
+	mouseX = x;
+	mouseY = y;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1088,12 +1109,12 @@ void ModelGL::rotateCamera(int x, int y)
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::zoomCamera(int y)
 {
-    cameraDistance -= (y - mouseY) * 0.1f;
-    mouseY = y;
+	cameraDistance -= (y - mouseY) * 0.1f;
+	mouseY = y;
 }
 void ModelGL::zoomCameraDelta(float delta)
 {
-    cameraDistance -= delta;
+	cameraDistance -= delta;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1101,11 +1122,11 @@ void ModelGL::zoomCameraDelta(float delta)
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::setDrawMode(int mode)
 {
-    if(drawMode != mode)
-    {
-        drawModeChanged = true;
-        drawMode = mode;
-    }
+	if (drawMode != mode)
+	{
+		drawModeChanged = true;
+		drawMode = mode;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1115,16 +1136,16 @@ void ModelGL::setDrawMode(int mode)
 ///////////////////////////////////////////////////////////////////////////////
 Matrix4 ModelGL::setFrustum(float l, float r, float b, float t, float n, float f)
 {
-    Matrix4 matrix;
-    matrix[0]  =  2 * n / (r - l);
-    matrix[5]  =  2 * n / (t - b);
-    matrix[8]  =  (r + l) / (r - l);
-    matrix[9]  =  (t + b) / (t - b);
-    matrix[10] = -(f + n) / (f - n);
-    matrix[11] = -1;
-    matrix[14] = -(2 * f * n) / (f - n);
-    matrix[15] =  0;
-    return matrix;
+	Matrix4 matrix;
+	matrix[0] = 2 * n / (r - l);
+	matrix[5] = 2 * n / (t - b);
+	matrix[8] = (r + l) / (r - l);
+	matrix[9] = (t + b) / (t - b);
+	matrix[10] = -(f + n) / (f - n);
+	matrix[11] = -1;
+	matrix[14] = -(2 * f * n) / (f - n);
+	matrix[15] = 0;
+	return matrix;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1133,12 +1154,12 @@ Matrix4 ModelGL::setFrustum(float l, float r, float b, float t, float n, float f
 ///////////////////////////////////////////////////////////////////////////////
 Matrix4 ModelGL::setFrustum(float fovY, float aspectRatio, float front, float back)
 {
-    float tangent = tanf(fovY/2 * DEG2RAD);   // tangent of half fovY
-    float height = front * tangent;           // half height of near plane
-    float width = height * aspectRatio;       // half width of near plane
+	float tangent = tanf(fovY / 2 * DEG2RAD);   // tangent of half fovY
+	float height = front * tangent;           // half height of near plane
+	float width = height * aspectRatio;       // half width of near plane
 
-    // params: left, right, bottom, top, near, far
-    return setFrustum(-width, width, -height, height, front, back);
+	// params: left, right, bottom, top, near, far
+	return setFrustum(-width, width, -height, height, front, back);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1148,14 +1169,14 @@ Matrix4 ModelGL::setFrustum(float fovY, float aspectRatio, float front, float ba
 ///////////////////////////////////////////////////////////////////////////////
 Matrix4 ModelGL::setOrthoFrustum(float l, float r, float b, float t, float n, float f)
 {
-    Matrix4 matrix;
-    matrix[0]  =  2 / (r - l);
-    matrix[5]  =  2 / (t - b);
-    matrix[10] = -2 / (f - n);
-    matrix[12] = -(r + l) / (r - l);
-    matrix[13] = -(t + b) / (t - b);
-    matrix[14] = -(f + n) / (f - n);
-    return matrix;
+	Matrix4 matrix;
+	matrix[0] = 2 / (r - l);
+	matrix[5] = 2 / (t - b);
+	matrix[10] = -2 / (f - n);
+	matrix[12] = -(r + l) / (r - l);
+	matrix[13] = -(t + b) / (t - b);
+	matrix[14] = -(f + n) / (f - n);
+	return matrix;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1164,67 +1185,109 @@ Matrix4 ModelGL::setOrthoFrustum(float l, float r, float b, float t, float n, fl
 ///////////////////////////////////////////////////////////////////////////////
 bool ModelGL::createShaderPrograms()
 {
-    // create 1st shader and program着色器1
-    GLuint vsId1 = glCreateShader(GL_VERTEX_SHADER);//顶点着色器
-    GLuint fsId1 = glCreateShader(GL_FRAGMENT_SHADER);//片段着色器
-    progId1 = glCreateProgram();
+	// create 1st shader and program着色器1
+	GLuint vsId1 = glCreateShader(GL_VERTEX_SHADER);//顶点着色器
+	GLuint fsId1 = glCreateShader(GL_FRAGMENT_SHADER);//片段着色器
+	progId1 = glCreateProgram();
 
-    // load shader sources: flat shader
-    glShaderSource(vsId1, 1, &vsSource1, 0);
-    glShaderSource(fsId1, 1, &fsSource1, 0);
+	// load shader sources: flat shader
+	glShaderSource(vsId1, 1, &vsSource1, 0);
+	glShaderSource(fsId1, 1, &fsSource1, 0);
 
-    // compile shader sources
-    glCompileShader(vsId1);
-    glCompileShader(fsId1);
+	// compile shader sources
+	glCompileShader(vsId1);
+	glCompileShader(fsId1);
 
-    // attach shaders to the program
-    glAttachShader(progId1, vsId1);
-    glAttachShader(progId1, fsId1);
+	// attach shaders to the program
+	glAttachShader(progId1, vsId1);
+	glAttachShader(progId1, fsId1);
 
-    // link program
-    glLinkProgram(progId1);
+	// link program
+	glLinkProgram(progId1);
 
-    // create 2nd shader and program着色器2
-    GLuint vsId2 = glCreateShader(GL_VERTEX_SHADER);
-    GLuint fsId2 = glCreateShader(GL_FRAGMENT_SHADER);
-    progId2 = glCreateProgram();
+	// create 2nd shader and program着色器2
+	GLuint vsId2 = glCreateShader(GL_VERTEX_SHADER);
+	GLuint fsId2 = glCreateShader(GL_FRAGMENT_SHADER);
+	progId2 = glCreateProgram();
 
-    // load shader sources:
-    glShaderSource(vsId2, 1, &vsSource2, 0);
-    glShaderSource(fsId2, 1, &fsSource2, 0);
+	// load shader sources:
+	glShaderSource(vsId2, 1, &vsSource2, 0);
+	glShaderSource(fsId2, 1, &fsSource2, 0);
 
-    // compile shader sources
-    glCompileShader(vsId2);
-    glCompileShader(fsId2);
+	// compile shader sources
+	glCompileShader(vsId2);
+	glCompileShader(fsId2);
 	GLint success21, success22;
 	glGetShaderiv(vsId2, GL_COMPILE_STATUS, &success21);
 	glGetShaderiv(fsId2, GL_COMPILE_STATUS, &success22);
 
-    // attach shaders to the program
-    glAttachShader(progId2, vsId2);
-    glAttachShader(progId2, fsId2);
+	// attach shaders to the program
+	glAttachShader(progId2, vsId2);
+	glAttachShader(progId2, fsId2);
 
-    // link program
-    glLinkProgram(progId2);
-	
-    // check status判断着色器状态
-    GLint linkStatus1, linkStatus2, linkStatus3;
-    glGetProgramiv(progId1, GL_LINK_STATUS, &linkStatus1);
-    glGetProgramiv(progId2, GL_LINK_STATUS, &linkStatus2);
+	// link program
+	glLinkProgram(progId2);
+
+
+	//// Build and compile our shader program
+	//GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	//glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	//glCompileShader(vertexShader);
+	//// Check for compile time errors
+	//GLint success;
+	//GLchar infoLog[512];
+	//glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	//if (!success)
+	//{
+	//	glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+	//	std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+	//}
+	//// Fragment shader
+	//GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	//glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	//glCompileShader(fragmentShader);
+	//// Check for compile time errors
+	//glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+	//if (!success)
+	//{
+	//	glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+	//	std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+	//}
+	//// Link shaders
+	//GLuint shaderProgram = glCreateProgram();
+	//glAttachShader(shaderProgram, vertexShader);
+	//glAttachShader(shaderProgram, fragmentShader);
+	//glLinkProgram(shaderProgram);
+	//// Check for linking errors
+	//glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+	//if (!success) {
+	//	glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+	//	std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+	//}
+	//glDeleteShader(vertexShader);
+	//glDeleteShader(fragmentShader);
+
+
+
+
+	// check status判断着色器状态
+	GLint linkStatus1, linkStatus2, linkStatus3;
+	glGetProgramiv(progId1, GL_LINK_STATUS, &linkStatus1);
+	glGetProgramiv(progId2, GL_LINK_STATUS, &linkStatus2);
 	//glGetProgramiv(progId3, GL_LINK_STATUS, &linkStatus3);
 
 	if (linkStatus1 == GL_TRUE && linkStatus2 == GL_TRUE)
-    {
-        return true;
-    }
-    else
-    {
-        std::cout << "=== GLSL LOG 1 ===\n" << getProgramStatus(progId1) << std::endl;
-        std::cout << "=== GLSL LOG 2 ===\n" << getProgramStatus(progId2) << std::endl;
+	{
+		return true;
+	}
+	else
+	{
+		std::cout << "=== GLSL LOG 1 ===\n" << getProgramStatus(progId1) << std::endl;
+		std::cout << "=== GLSL LOG 2 ===\n" << getProgramStatus(progId2) << std::endl;
 		//std::cout << "=== GLSL LOG 3 ===\n" << getProgramStatus(progId3) << std::endl;
 
-        return false;
-    }
+		return false;
+	}
 
 }
 
@@ -1234,25 +1297,25 @@ bool ModelGL::createShaderPrograms()
 ///////////////////////////////////////////////////////////////////////////////
 std::string ModelGL::getShaderStatus(GLuint shader)
 {
-    std::string message;
-    GLint status;
-    glGetShaderiv(shader, GL_LINK_STATUS, &status);
+	std::string message;
+	GLint status;
+	glGetShaderiv(shader, GL_LINK_STATUS, &status);
 
-    // failed to compile
-    if(status == GL_FALSE)
-    {
-        // get # of chars of log
-        int charCount = 0;
-        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &charCount);
+	// failed to compile
+	if (status == GL_FALSE)
+	{
+		// get # of chars of log
+		int charCount = 0;
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &charCount);
 
-        // get log
-        char* buffer = new char[charCount];
-        glGetShaderInfoLog(shader, charCount, &charCount, buffer);
-        message = buffer;       // copy
-        delete [] buffer;       // dealloc
-    }
+		// get log
+		char* buffer = new char[charCount];
+		glGetShaderInfoLog(shader, charCount, &charCount, buffer);
+		message = buffer;       // copy
+		delete[] buffer;       // dealloc
+	}
 
-    return message;
+	return message;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1261,23 +1324,23 @@ std::string ModelGL::getShaderStatus(GLuint shader)
 ///////////////////////////////////////////////////////////////////////////////
 std::string ModelGL::getProgramStatus(GLuint program)
 {
-    std::string message;
-    GLint status;
-    glGetProgramiv(program, GL_LINK_STATUS, &status);
+	std::string message;
+	GLint status;
+	glGetProgramiv(program, GL_LINK_STATUS, &status);
 
-    // failed to link
-    if(status == GL_FALSE)
-    {
-        // get # of chars of log
-        int charCount = 0;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &charCount);
+	// failed to link
+	if (status == GL_FALSE)
+	{
+		// get # of chars of log
+		int charCount = 0;
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &charCount);
 
-        // get log
-        char* buffer = new char[charCount];
-        glGetProgramInfoLog(program, charCount, &charCount, buffer);
-        message = buffer;   // copy
-        delete [] buffer;   // dealloc
-    }
+		// get log
+		char* buffer = new char[charCount];
+		glGetProgramInfoLog(program, charCount, &charCount, buffer);
+		message = buffer;   // copy
+		delete[] buffer;   // dealloc
+	}
 
-    return message;
+	return message;
 }

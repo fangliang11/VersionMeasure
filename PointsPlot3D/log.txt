@@ -1,33 +1,33 @@
-===== Log started at 2018-12-27, 11:24:52. =====
+===== Log started at 2019-01-03, 18:12:50. =====
 
-11:24:52  Main window is created.
-11:24:52  Display Resolution: 1920x1080
-11:24:52  Creating a dummy window to use WGL_ARB_pixel_format extension.
-11:24:53  WGL_ARB_pixel_format and WGL_ARB_multisample are supported.
-11:24:53  Use wglChoosePixelFormatARB() to find a pixel format with MSAA.
-11:24:53  MSAA mode: 8x
-11:24:53  Pixel Format: 60
-11:24:53  A dummy window is destroyed.
-11:24:53  Created OpenGL rendering context.
-11:24:53  Created a rendering thread for OpenGL.
-11:24:53  Changed OpenGL rendering window size: 1920x1080.
-11:24:53  OpenGL child window is created.
-11:24:53  Initialized OpenGL states.
-11:24:53  GLSL shader objects are initialized.
-11:24:53  Initialized OpenGL window size.
-11:24:53  Entering OpenGL rendering thread...
-11:24:53  OpenGL form dialog is created.
-11:24:53  Form dialog dimension: 1076 x 268
-11:24:53  Changed OpenGL rendering window size: 1076x538.
-11:24:53  GL window dimension: 1076 x 538
-11:24:54  
-11:24:54  Closing the application...
-11:24:54  Closed OpenGL rendering context (RC).
-11:24:54  Exit OpenGL rendering thread.
-11:24:54  OpenGL window is destroyed.
-11:24:54  Form dialog is destroyed.
-11:24:54  Main windows is destroyed.
-11:24:54  Application is terminated.
+18:12:50  Main window is created.
+18:12:50  Display Resolution: 1920x1080
+18:12:50  Creating a dummy window to use WGL_ARB_pixel_format extension.
+18:12:50  WGL_ARB_pixel_format and WGL_ARB_multisample are supported.
+18:12:50  Use wglChoosePixelFormatARB() to find a pixel format with MSAA.
+18:12:50  MSAA mode: 8x
+18:12:50  Pixel Format: 46
+18:12:50  A dummy window is destroyed.
+18:12:50  Created OpenGL rendering context.
+18:12:50  Created a rendering thread for OpenGL.
+18:12:50  Changed OpenGL rendering window size: 1920x1080.
+18:12:50  OpenGL child window is created.
+18:12:50  Initialized OpenGL states.
+18:12:50  GLSL shader objects are initialized.
+18:12:50  Initialized OpenGL window size.
+18:12:50  Entering OpenGL rendering thread...
+18:12:50  OpenGL form dialog is created.
+18:12:50  Form dialog dimension: 1076 x 268
+18:12:50  Changed OpenGL rendering window size: 1076x538.
+18:12:50  GL window dimension: 1076 x 538
+18:13:09  
+18:13:09  Closing the application...
+18:13:09  Closed OpenGL rendering context (RC).
+18:13:09  Exit OpenGL rendering thread.
+18:13:09  OpenGL window is destroyed.
+18:13:09  Form dialog is destroyed.
+18:13:09  Main windows is destroyed.
+18:13:09  Application is terminated.
 
 
 ===== END OF LOG =====

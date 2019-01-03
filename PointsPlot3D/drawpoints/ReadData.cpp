@@ -43,21 +43,45 @@ wstring ReadData::selectFile() {
 	if (GetOpenFileName(&ofn))
 	{
 		SELECTFINISHFLAG = true;
-		MessageBox(NULL, strFilename, TEXT("已选择数据"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
+		//MessageBox(NULL, strFilename, TEXT("已选择数据"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
 	}
 
 	TCHAR *tchar = strFilename;  // TCHAR型转成 string 型
 	wstring ws(tchar);
 	string str(ws.begin(), ws.end());
 
-
-	//AllocConsole();
-	//freopen("CONOUT$", "w+t", stdout);
-	//freopen("CONIN$", "r+t", stdin);
-	//printf("%s\n", str.c_str());
-
 	return ws;
 }
+
+string ReadData::selectImage() {
+
+	OPENFILENAME ofn = { 0 };
+	TCHAR strFilename[MAX_PATH] = { 0 };//用于接收文件名
+
+	ofn.lStructSize = sizeof(OPENFILENAME);//结构体大小
+	ofn.hwndOwner = NULL;//拥有着窗口句柄，为NULL表示对话框是非模态的，实际应用中一般都要有这个句柄
+	//ofn.lpstrFilter = TEXT("所有文件\0*.*\0.png/.jpg/.bmp Flie\0*.png;*.jpg;*.bmp\0\0");//设置过滤
+	ofn.lpstrFilter = TEXT(".png/.jpg/.bmp 文件\0*.png;*.jpg;*.bmp\0\0");//设置过滤
+
+	ofn.nFilterIndex = 1;//过滤器索引
+	ofn.lpstrFile = strFilename;//接收返回的文件名，注意第一个字符需要为NULL
+	ofn.nMaxFile = sizeof(strFilename);//缓冲区长度
+	ofn.lpstrInitialDir = NULL;//初始目录为默认
+	ofn.lpstrTitle = TEXT("请选择数据文件");//使用系统默认标题留空即可
+	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;//文件、目录必须存在，隐藏只读选项
+	if (GetOpenFileName(&ofn))
+	{
+		SELECTFINISHFLAG = true;
+		//MessageBox(NULL, strFilename, TEXT("已选择数据"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
+	}
+
+	TCHAR *tchar = strFilename;  // TCHAR型转成 string 型
+	wstring ws(tchar);
+	string str(ws.begin(), ws.end());
+
+	return str;
+}
+
 
 void ReadData::show(string selectfilename) {
 
