@@ -61,8 +61,6 @@ int ControllerFormGL::create()
     model->setViewMatrix(0, 0, 10, 0, 0, 0);
     view->setViewMatrix(0, 0, 10, 0, 0, 0);
 
-	SELECTFINISHFLAG = false;
-
     return 0;
 }
 
@@ -110,29 +108,26 @@ int ControllerFormGL::command(int id, int command, LPARAM msg)
 		{
 			//打开数据文件
 			wstrselectfilename = myData.selectFile();
-			model->CTRDRAWFLAG = false; //绘图重置
-			view->setEditText(wstrselectfilename);
+			if (myData.SELECTFILEFLAG) {
+				model->CTRDRAWFLAG = false; //绘图重置
+				view->setEditText(wstrselectfilename);
 
-			SELECTFINISHFLAG = true;
+			}
 		}
 		break;
 	case IDC_BUTTON_DRAW:
 		if (command == BN_CLICKED)    // 重绘按钮
 		{
 			filename = view->getEditText(handle);
-			myData.readFile(filename, 5, numX, numY, numZ, ROWNUM, coordinateX, coordinateY, coordinateZ);
-
-			model->modelCoordinateX = coordinateX;
-			model->modelCoordinateY = coordinateY;
-			model->modelCoordinateZ = coordinateZ;
-			model->modelROWNUM = ROWNUM;
-			model->CTRDRAWFLAG = true;
-
-			if (myData.READFINISHFLAG) {
-
-				MessageBox(NULL, TEXT("图像已生成"), TEXT("重绘完成"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
-
+			READDATAFLAG = myData.readFile(filename, 5, numX, numY, numZ, ROWNUM, coordinateX, coordinateY, coordinateZ);
+			if (READDATAFLAG) {
+				model->modelCoordinateX = coordinateX;
+				model->modelCoordinateY = coordinateY;
+				model->modelCoordinateZ = coordinateZ;
+				model->modelROWNUM = ROWNUM;
+				model->CTRDRAWFLAG = true;
 			}
+			//else MessageBox(NULL, TEXT("数据读取失败"), TEXT("错误"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
 		}
 		break;
 	case IDC_COMBO_X:  // 选择 X 轴坐标
@@ -207,44 +202,30 @@ int ControllerFormGL::command(int id, int command, LPARAM msg)
 			model->CAMERAFLAG = false;
 		}
 		break;
-	case IDC_BUTTON_IMAGE1SHOW:   //显示图片1
-		if (command == BN_CLICKED)
-		{
-			//model->BUILDIMAGE = true;
-		}
-		break;
-	case IDC_BUTTON_IMAGE1OPEN:   //打开图片1
+	case IDC_BUTTON_IMAGE1OPEN:   //选择图片1
 		if (command == BN_CLICKED)
 		{
 			strselectimagename1 = myData.selectImage();
-			view->setEditImage1Text(strselectimagename1);
+			if (myData.SELECTIMAGEFLAG) {
+				view->setEditImage1Text(strselectimagename1);
+				char* charname1 = (char*)strselectimagename1.c_str();  // string to char*
 
-			char* charname1 = (char*)strselectimagename1.c_str();
-			model->imagename1 = charname1;
-
-			model->BUILDIMAGE = false;
-			//model->BUILDBUFFER = true;  //重新创建顶点缓存
+				model->imagename1 = charname1;
+				model->BUILDBUFFER = true;  //重新创建顶点缓存
+			}
 		}
 		break;
-	case IDC_BUTTON_IMAGE2SHOW:   //显示图片2
-		if (command == BN_CLICKED)
-		{
-			model->BUILDIMAGE = true;
-		}
-		break;
-
-	case IDC_BUTTON_IMAGE2OPEN:   //打开图片2
+	case IDC_BUTTON_IMAGE2OPEN:   //选择图片2
 		if (command == BN_CLICKED)
 		{
 			strselectimagename2 = myData.selectImage();
-			view->setEditImage2Text(strselectimagename2);
+			if (myData.SELECTIMAGEFLAG) {
+				view->setEditImage2Text(strselectimagename2);
+				char* charname2 = (char*)strselectimagename2.c_str();   // string to char*
 
-			char* charname2 = (char*)strselectimagename2.c_str();
-			model->imagename2 = charname2;
-
-			model->BUILDIMAGE = false;
-			model->BUILDBUFFER = true;  //重新创建顶点缓存
-
+				model->imagename2 = charname2;
+				model->BUILDBUFFER = true;  //重新创建顶点缓存
+			}
 		}
 		break;
 

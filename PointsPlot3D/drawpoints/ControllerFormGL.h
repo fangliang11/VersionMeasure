@@ -34,8 +34,7 @@ namespace Win
         int notify(int id, LPARAM lParam);          // for WM_NOTIFY
         int timer(WPARAM eventId, LPARAM callback); // for WM_TIMER
 
-		bool READFINISHFLAG = false;
-		bool SELECTFINISHFLAG;
+		bool READDATAFLAG = false;
 		vector<float> coordinateX;
 		vector<float> coordinateY;
 		vector<float> coordinateZ;

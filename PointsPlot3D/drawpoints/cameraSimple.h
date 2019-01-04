@@ -245,6 +245,7 @@ static GLint cameraIndices[] = {
 
 void drawCamera()
 {
+
 	float shininess = 32.0f;
 	float ambientColor[4] = {0.3f, 0.3f, 0.3f, 1.0f};
 	float diffuseColor[4] = {0.8f, 0.8f, 0.8f, 1.0f};
@@ -260,14 +261,21 @@ void drawCamera()
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glColor3fv(diffuseColor);
 
+	GLuint cameraVAO, cameraVBO, cameraEBO;
+	glGenBuffers(1, &cameraVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, cameraVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cameraVertices), cameraVertices, GL_STATIC_DRAW);
+	glVertexPointer(3, GL_FLOAT, 0, 0);  //define an array of vertex data
+	glEnableClientState(GL_VERTEX_ARRAY);  //开启顶点数组功能
+
 	// start to render polygons
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_VERTEX_ARRAY);
+	//glEnableClientState(GL_NORMAL_ARRAY);
+	//glEnableClientState(GL_VERTEX_ARRAY);
 
-	glNormalPointer(GL_FLOAT, 0, cameraNormals);
-	glVertexPointer(3, GL_FLOAT, 0, cameraVertices);
+	//glNormalPointer(GL_FLOAT, 0, cameraNormals);
+	//glVertexPointer(3, GL_FLOAT, 0, cameraVertices);  //为顶点数组指定数据
 
-	glDrawElements(GL_TRIANGLE_STRIP, 5, GL_UNSIGNED_INT, &cameraIndices[0]);
+	glDrawElements(GL_TRIANGLE_STRIP, 5, GL_UNSIGNED_INT, &cameraIndices[0]);  //由于使用了索引glDrawElements来替换glDrawArrays函数
 	glDrawElements(GL_TRIANGLE_STRIP, 5, GL_UNSIGNED_INT, &cameraIndices[5]);
 	glDrawElements(GL_TRIANGLE_STRIP, 5, GL_UNSIGNED_INT, &cameraIndices[10]);
 	glDrawElements(GL_TRIANGLE_STRIP, 5, GL_UNSIGNED_INT, &cameraIndices[15]);
@@ -280,7 +288,7 @@ void drawCamera()
 	glDrawElements(GL_TRIANGLE_STRIP, 44, GL_UNSIGNED_INT, &cameraIndices[201]);
 
 	glDisableClientState(GL_VERTEX_ARRAY);	// disable vertex arrays
-	glDisableClientState(GL_NORMAL_ARRAY);	// disable normal arrays
+	//glDisableClientState(GL_NORMAL_ARRAY);	// disable normal arrays
 }
 
 #endif

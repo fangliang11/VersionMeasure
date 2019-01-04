@@ -13,6 +13,8 @@
 #define READDATA_H
 
 #include <vector>
+#include <iostream>
+
 using namespace std;
 
 class ReadData
@@ -24,8 +26,7 @@ public:
 
 	wstring selectFile();
 	string selectImage();
-	int readFile(string filename, int AXES_LEN,int &ROWNUM, vector<float> &x, vector<float> &y, vector<float> &z);
-	int readFile(string filename, int AXES_LEN, int column_num_X, int column_num_Y, int column_num_Z, int &ROWNUM, vector<float> &x, vector<float> &y, vector<float> &z);
+	bool readFile(string filename, int AXES_LEN, int column_num_X, int column_num_Y, int column_num_Z, int &ROWNUM, vector<float> &x, vector<float> &y, vector<float> &z);
 
 	void show(string selectfilename);
 	void selectCoordinate(); //选择数据列
@@ -46,7 +47,8 @@ public:
 	//Coordinate getCoordinate(string filename, int AXES_LEN, vector<float> x, vector<float> y, vector<float> z);
 
 	bool READFINISHFLAG;
-	bool SELECTFINISHFLAG;
+	bool SELECTFILEFLAG;
+	bool SELECTIMAGEFLAG;
 
 };
 

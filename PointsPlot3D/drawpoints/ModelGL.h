@@ -89,11 +89,10 @@ public:
 
 	GLuint compileshader();
 	void buildBuffer(char* filename1, char* filename2, GLuint &VAO, GLuint &VBO, GLuint &EBO, GLuint &texture1, GLuint &texture2);
-	//void shaderImage(const char* filename1, const char* filename2);   //创建图片纹理
 	void shaderImage();
 	void deleteBuffer();
-	char *imagename1;
-    char *imagename2;
+	char *imagename1 = "backimage1.jpg";
+    char *imagename2 = "backimage2.jpg";
 
 
 	vector<float> modelCoordinateX;  //  点云图 点 的坐标
@@ -103,7 +102,7 @@ public:
 
 	bool CTRDRAWFLAG = false;  // opengl重绘标志位
 	bool CAMERAFLAG = true;  // 显示/隐藏相机
-	bool BUILDIMAGE = false; //纹理着色器
+	bool BUILDIMAGE = true; //纹理着色器
 	bool BUILDBUFFER = false;
 	int color = 0;
 	int backcolor = 0;

@@ -175,6 +175,9 @@ void ViewFormGL::initControls(HWND handle)
 
 	setCamera.check();        // µ¥Ñ¡¿ò°´Å¥
 
+
+	//buttonOpenFile.disable();
+
     // elements for view matrix
     mv[0].set(handle, IDC_M_V_0);
     mv[1].set(handle, IDC_M_V_1);

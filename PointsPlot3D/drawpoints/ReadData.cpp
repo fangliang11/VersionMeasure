@@ -42,13 +42,14 @@ wstring ReadData::selectFile() {
 	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;//文件、目录必须存在，隐藏只读选项
 	if (GetOpenFileName(&ofn))
 	{
-		SELECTFINISHFLAG = true;
+		SELECTFILEFLAG = true;
 		//MessageBox(NULL, strFilename, TEXT("已选择数据"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
 	}
+	else SELECTFILEFLAG = false;
 
 	TCHAR *tchar = strFilename;  // TCHAR型转成 string 型
 	wstring ws(tchar);
-	string str(ws.begin(), ws.end());
+	//string str(ws.begin(), ws.end());
 
 	return ws;
 }
@@ -67,13 +68,14 @@ string ReadData::selectImage() {
 	ofn.lpstrFile = strFilename;//接收返回的文件名，注意第一个字符需要为NULL
 	ofn.nMaxFile = sizeof(strFilename);//缓冲区长度
 	ofn.lpstrInitialDir = NULL;//初始目录为默认
-	ofn.lpstrTitle = TEXT("请选择数据文件");//使用系统默认标题留空即可
+	ofn.lpstrTitle = TEXT("请选择图像文件");//使用系统默认标题留空即可
 	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;//文件、目录必须存在，隐藏只读选项
 	if (GetOpenFileName(&ofn))
 	{
-		SELECTFINISHFLAG = true;
+		SELECTIMAGEFLAG = true;
 		//MessageBox(NULL, strFilename, TEXT("已选择数据"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
 	}
+	else SELECTIMAGEFLAG = false;
 
 	TCHAR *tchar = strFilename;  // TCHAR型转成 string 型
 	wstring ws(tchar);
@@ -81,7 +83,6 @@ string ReadData::selectImage() {
 
 	return str;
 }
-
 
 void ReadData::show(string selectfilename) {
 
@@ -92,106 +93,15 @@ void ReadData::show(string selectfilename) {
 
 }
 
-int ReadData::readFile(string filename, int AXES_LEN,
+
+bool ReadData::readFile(string filename, int AXES_LEN, int column_num_X, int column_num_Y, int column_num_Z,
 	                   int &ROWNUM, vector<float> &x, vector<float> &y, vector<float> &z) {
 
 	ifstream myfile(filename);
 	if (!myfile.is_open()) {
-		MessageBox(NULL, TEXT("读取数据失败\n\n请选择或输入数据文件的名称"), TEXT("错误"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
-
-		return 0;
-	}
-	else if (myfile.is_open()) {
-
-		vector<string> vec;
-		vector<float> vectorX;
-		vector<float> vectorY;
-		vector<float> vectorZ;
-
-		string temp;
-		while (getline(myfile, temp))                    //利用getline（）读取每一行，并按照行为单位放入到vector
-		{
-			vec.push_back(temp);
-		}
-		myfile.close();
-		ROWNUM = vec.size();
-		//cout << " the num of row is: " << ROWNUM << endl;
-		for (auto it = vec.begin(); it != vec.end(); it++)
-		{
-			//cout << *it << endl;
-			istringstream is(*it);                    //用每一行的数据初始化一个字符串输入流；
-			string s;
-			int pam = 1;                              //从第一列开始
-
-			while (is >> s)                          //以空格为界，把istringstream中数据取出放入到依次s中
-			{
-				if (pam == 3)                       //获取第 P 列的数据
-				{
-					float r = atof(s.c_str());     //做数据类型转换，将string类型转换成float
-					vectorX.push_back(r);
-				}
-				if (pam == 4) {
-					float y = atof(s.c_str());
-					vectorY.push_back(y);
-				}
-				if (pam == 5) {
-					float z = atof(s.c_str());
-					vectorZ.push_back(z);
-				}
-
-				pam++;
-
-			}
-		}
-
-		float maxX, maxY, maxZ, minX, minY, minZ;
-		maxX = *max_element(begin(vectorX), end(vectorX));
-		minX = *min_element(begin(vectorX), end(vectorX));
-
-		maxY = *max_element(begin(vectorY), end(vectorY));
-		minY = *min_element(begin(vectorY), end(vectorY));
-
-		maxZ = *max_element(begin(vectorZ), end(vectorZ));
-		minZ = *min_element(begin(vectorZ), end(vectorZ));
-
-		vector<float> coordinateX;
-		vector<float> coordinateY;
-		vector<float> coordinateZ;
-
-		//coordinateX.clear();
-		//coordinateY.clear();
-		//coordinateZ.clear();
-
-		for (int i = 0; i < ROWNUM; i++) {
-			float coeffX = 1.5*AXES_LEN / (maxX - minX); //求坐标系下的坐标数值
-			coordinateX.push_back(coeffX * vectorX[i]);
-
-			float coeffY = 1.5*AXES_LEN / (maxY - minY);
-			coordinateY.push_back(coeffY * vectorY[i]);
-
-			float coeffZ = 2 / (maxZ - minZ);  ////深度的变化范围对应坐标系Z轴2个单位的长度
-			coordinateZ.push_back(coeffZ * (vectorZ[i] - minZ));
-
-		}
-		x = coordinateX;
-		y = coordinateY;
-		z = coordinateZ;
-
-		return 1;
-	}
-
-	return 0;
-}
-
-int ReadData::readFile(string filename, int AXES_LEN, int column_num_X, int column_num_Y, int column_num_Z,
-	                   int &ROWNUM, vector<float> &x, vector<float> &y, vector<float> &z) {
-
-	ifstream myfile(filename);
-	if (!myfile.is_open()) {
-		READFINISHFLAG = false;
 		MessageBox(NULL, TEXT("读取数据失败\n\n请输入正确的文件名"), TEXT("错误"), MB_OK| MB_SYSTEMMODAL | MB_ICONERROR);
 
-		return 0;
+		return false;
 	}
 	else if (myfile.is_open()) {
 
@@ -208,8 +118,19 @@ int ReadData::readFile(string filename, int AXES_LEN, int column_num_X, int colu
 			vec.push_back(temp);
 		}
 		myfile.close();
+
+		//AllocConsole();
+		//freopen("CONOUT$", "w+t", stdout);
+		//freopen("CONIN$", "r+t", stdin);
+		//std::cout << vec.at(0) << std::endl;
+
+		if (vec.at(0) == "x,  y,  x1,  y1,   z1,   D_x,   D_y,   D_z,   x2,    y2,    z2,    D_p,   corroef") {
+			
+			//MessageBox(NULL, TEXT("数据格式错误，请删除表头后重试"), TEXT("错误"), MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
+			vec.erase(vec.begin(), vec.begin() + 2);  //跳过表头
+		}
+
 		ROWNUM = vec.size();
-		//cout << " the num of row is: " << ROWNUM << endl;
 		for (auto it = vec.begin(); it != vec.end(); it++)
 		{
 			//cout << *it << endl;
@@ -240,6 +161,7 @@ int ReadData::readFile(string filename, int AXES_LEN, int column_num_X, int colu
 			}
 		}
 
+
 		float maxX, maxY, maxZ, minX, minY, minZ;
 		maxX = *max_element(begin(vectorX), end(vectorX));
 		minX = *min_element(begin(vectorX), end(vectorX));
@@ -253,10 +175,6 @@ int ReadData::readFile(string filename, int AXES_LEN, int column_num_X, int colu
 		vector<float> coordinateX;
 		vector<float> coordinateY;
 		vector<float> coordinateZ;
-
-		//coordinateX.clear();
-		//coordinateY.clear();
-		//coordinateZ.clear();
 
 		for (int i = 0; i < ROWNUM; i++) {
 			float coeffX = 1.5*AXES_LEN / (maxX - minX); //求坐标系下的坐标数值
@@ -272,13 +190,9 @@ int ReadData::readFile(string filename, int AXES_LEN, int column_num_X, int colu
 		x = coordinateX;
 		y = coordinateY;
 		z = coordinateZ;
-		READFINISHFLAG = true;
 
-		return 1;
 	}
-
-
-	return 0;
+	return true;
 }
 
 

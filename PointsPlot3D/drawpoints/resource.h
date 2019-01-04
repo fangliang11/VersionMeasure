@@ -105,7 +105,6 @@
 #define IDC_BUTTON1                     1119
 #define IDC_BUTTON_CALCULATE            1119
 #define IDC_BUTTON_IMAGESHOW            1119
-#define IDC_BUTTON_IMAGE1SHOW           1119
 #define IDC_EDIT1                       1120
 #define IDC_MAX_X                       1120
 #define IDC_EDIT_IMAGENAME1             1120
@@ -135,7 +134,6 @@
 #define IDC_SLIDER_COLOR                1140
 #define IDC_STATIC_COLOR                1141
 #define IDC_BUTTON_IMAGE2OPEN           1142
-#define IDC_BUTTON3                     1143
 #define IDC_BUTTON_IMAGE2SHOW           1143
 #define ID_40003                        40003
 #define ID_40004                        40004

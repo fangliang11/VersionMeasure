@@ -213,8 +213,7 @@ bool ModelGL::initShaders()
 			glslReady = createShaderPrograms();
 		shaderID = compileshader();
 
-		buildBuffer("backimage2.jpg", "backimage1.jpg", imageareaVAO, imageareaVBO, imageareaEBO, imagetexture1, imagetexture2); //默认显示的图片
-
+		buildBuffer(imagename1, imagename2, imageareaVAO, imageareaVBO, imageareaEBO, imagetexture1, imagetexture2); //默认显示的图片
 	}
 	return glslReady;
 }
@@ -451,7 +450,7 @@ void ModelGL::drawSub1()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// 显示 png 图片
+// 显示图片
 ///////////////////////////////////////////////////////////////////////////////
 GLuint ModelGL::compileshader() {
 
@@ -513,31 +512,33 @@ void ModelGL::buildBuffer(char* filename1, char* filename2, GLuint &VAO, GLuint 
 	//GLuint VBO, VAO, EBO;
 	//GLuint VBO, EBO;
 
-	glGenVertexArrays(1, &VAO);  //创建顶点数组对象
-	glGenBuffers(1, &VBO);   //使用glGenBuffers函数和一个缓冲ID生成一个VBO对象
+	glGenVertexArrays(1, &VAO);  //创建顶点数组对象 VAO
+	glGenBuffers(1, &VBO);   //创建缓冲区对象，使用glGenBuffers函数和一个缓冲ID生成一个VBO对象
 	glGenBuffers(1, &EBO);  //索引缓冲对象
 
+	//要想使用VAO，要做的只是使用glBindVertexArray绑定VAO。
+	//从绑定之后起，我们应该绑定和配置对应的VBO和属性指针，之后解绑VAO供之后使用。
+	//当我们打算绘制一个物体的时候，我们只要在绘制物体前简单地把VAO绑定到希望使用的设定上就行了。
 	//1. 绑定VAO
 	glBindVertexArray(VAO);
+	    // 2. 复制顶点数组到缓冲中供OpenGL使用
+	    glBindBuffer(GL_ARRAY_BUFFER, VBO);    //激活缓冲区对象，把新创建的缓冲VBO绑定到GL_ARRAY_BUFFER目标上
+	    //glBufferData是一个专门用来把用户定义的数据复制到当前绑定缓冲的函数
+	    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); //把之前定义的顶点数据复制到缓冲的内存中,   GL_STATIC_DRAW ：数据不会或几乎不会改变
 
-	// 2. 复制顶点数组到缓冲中供OpenGL使用
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);    //把新创建的缓冲VBO绑定到GL_ARRAY_BUFFER目标上
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);    //把之前定义的顶点数据复制到缓冲的内存中,   GL_STATIC_DRAW ：数据不会或几乎不会改变
+	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);  //把索引复制到缓冲里
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);  //把索引复制到缓冲里
-
-	// 3. 设置顶点属性指针
-	// Position attribute位置属性
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);  //告诉OpenGL该如何解析顶点数据（应用到逐个顶点属性上）
-	glEnableVertexAttribArray(0);   //以顶点属性位置值作为参数，启用顶点属性；顶点属性默认是禁用的
-	// Color attribute颜色属性
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-	// TexCoord attribute纹理属性
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(2);
-
+	    // 3. 设置顶点属性指针,对数据进行解析
+	    // Position attribute位置属性
+	    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);  //告诉OpenGL该如何解析顶点数据（应用到逐个顶点属性上）
+	    glEnableVertexAttribArray(0);   //以顶点属性位置值作为参数，启用顶点属性；顶点属性默认是禁用的
+	    // Color attribute颜色属性
+	    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	    glEnableVertexAttribArray(1);
+	    // TexCoord attribute纹理属性
+	    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+	    glEnableVertexAttribArray(2);
 	//4. 解绑VAO
 	glBindVertexArray(0); // Unbind VAO
 
@@ -604,6 +605,7 @@ void ModelGL::shaderImage() {
 
 	// Draw the triangle
 	glBindVertexArray(imageareaVAO);
+	//由于使用了索引glDrawElements来替换glDrawArrays函数，glDrawElements函数用于循环调用glArrayElement,但需要定义一个索引的数组
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);  //绘图模式/顶点个数/索引类型/EBO中的偏移量
 	glBindVertexArray(0);
 
@@ -619,7 +621,6 @@ void ModelGL::deleteBuffer() {
 ///////////////////////////////////////////////////////////////////////////////
 // draw right window (3rd person view)  绘制右侧窗口------三维点云图显示
 ///////////////////////////////////////////////////////////////////////////////
-//int AXES_LEN = 5;
 void ModelGL::drawSub2()
 {
 
@@ -669,8 +670,6 @@ void ModelGL::drawSub2()
 	{
 		glUseProgram(progId1);
 		glDisable(GL_COLOR_MATERIAL);
-
-
 
 		if (CTRDRAWFLAG) {
 			glColor4f(imagecolorR, imagecolorG, imagecolorB, imagecolorA);
@@ -915,7 +914,7 @@ void ModelGL::drawAxis(float size)
 	glTranslatef(0, 0, 2.1*size);
 	gluCylinder(objCylinder, 0.08, 0.0, 0.1*size, 10, 5);//Z_箭头
 	glRasterPos3f(-0.3, 0.3, 0.2);
-	drawCNString("Z ");// Print GL Text ToThe Screen
+	drawCNString("ZZ ");// Print GL Text ToThe Screen
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glTranslatef(0, 0, -2.1*size);
 	glRotatef(-90, 1.0, 0.0, 0.0);
