@@ -115,20 +115,26 @@ bool ReadData::readFile(string filename, int AXES_LEN, int column_num_X, int col
 		string temp;
 		while (getline(myfile, temp))                    //利用getline（）读取每一行，并按照行为单位放入到vector
 		{
-			vec.push_back(temp);
+			if (!temp.empty()) {
+				if (temp[0] == 'x' || temp[0] == '#') {
+					temp.clear();  //跳过表头
+				}
+				else vec.push_back(temp);
+			}
 		}
 		myfile.close();
+
 
 		//AllocConsole();
 		//freopen("CONOUT$", "w+t", stdout);
 		//freopen("CONIN$", "r+t", stdin);
-		//std::cout << vec.at(0) << std::endl;
+		//std::cout << temp[0] << std::endl;
 
-		if (vec.at(0) == "x,  y,  x1,  y1,   z1,   D_x,   D_y,   D_z,   x2,    y2,    z2,    D_p,   corroef") {
-			
-			//MessageBox(NULL, TEXT("数据格式错误，请删除表头后重试"), TEXT("错误"), MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
-			vec.erase(vec.begin(), vec.begin() + 2);  //跳过表头
-		}
+		//if (vec.at(0) == "x,  y,  x1,  y1,   z1,   D_x,   D_y,   D_z,   x2,    y2,    z2,    D_p,   corroef") {
+		//	
+		//	//MessageBox(NULL, TEXT("数据格式错误，请删除表头后重试"), TEXT("错误"), MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
+		//	vec.erase(vec.begin(), vec.begin() + 2);  //跳过表头
+		//}
 
 		ROWNUM = vec.size();
 		for (auto it = vec.begin(); it != vec.end(); it++)

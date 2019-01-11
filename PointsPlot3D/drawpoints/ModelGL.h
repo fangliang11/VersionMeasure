@@ -27,6 +27,9 @@
 #include "glext.h"
 #include "glExtension.h"
 #include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+
 using namespace std;
 
 class ModelGL
@@ -86,6 +89,8 @@ public:
 	void zoomCameraDelta(float delta);  // for mousewheel
 
 	bool isShaderSupported() { return glslSupported; }
+
+	void grabScreen();
 
 	GLuint compileshader();
 	void buildBuffer(char* filename1, char* filename2, GLuint &VAO, GLuint &VBO, GLuint &EBO, GLuint &texture1, GLuint &texture2);

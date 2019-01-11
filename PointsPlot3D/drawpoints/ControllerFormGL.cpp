@@ -130,6 +130,12 @@ int ControllerFormGL::command(int id, int command, LPARAM msg)
 			//else MessageBox(NULL, TEXT("数据读取失败"), TEXT("错误"), MB_OK | MB_SYSTEMMODAL | MB_ICONINFORMATION);
 		}
 		break;
+	case IDC_BUTTON_SAVE:
+		if (command == BN_CLICKED)  //  保存图片
+		{
+			//model->grabScreen();
+		}
+		break;
 	case IDC_COMBO_X:  // 选择 X 轴坐标
 		if (command == CBN_SELENDOK)
 		{

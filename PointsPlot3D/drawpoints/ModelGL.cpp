@@ -1343,3 +1343,107 @@ std::string ModelGL::getProgramStatus(GLuint program)
 
 	return message;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// 抓取窗口中的像素
+///////////////////////////////////////////////////////////////////////////////
+//#define BMP_Header_Length 54
+//void ModelGL::grabScreen()
+//{
+//	FILE* pDummyFile;
+//	FILE* pWritingFile;
+//	GLubyte* pPixelData;
+//	GLubyte BMP_Header[BMP_Header_Length];
+//	GLint i, j;
+//	GLint PixelDataLength;
+//	// 计算像素数据的实际长度
+//	i = povWidth * 3; // 得到每一行的像素数据长度
+//	while (i % 4 != 0) // 补充数据，直到 i是的倍数
+//		++i; // 本来还有更快的算法，
+//	// 但这里仅追求直观，对速度没有太高要求
+//	PixelDataLength = i * povWidth;
+//	// 分配内存和打开文件
+//	pPixelData = (GLubyte*)malloc(PixelDataLength);
+//	if (pPixelData == 0)
+//		exit(0);
+//	pDummyFile = fopen("uvtemplate.bmp", "rb");//从一个正确的bmp文件中读取前54个字节，修改其中的宽度和高度信息，就可以得到新的文件头
+//	if (pDummyFile == 0)
+//		exit(0);
+//
+//	pWritingFile = fopen("test.bmp", "wb");
+//
+//	if (pWritingFile == 0)
+//		exit(0);
+//	// 读取像素
+//	// GL_UNPACK_ALIGNMENT指定OPenGL如何从数据缓冲区中解包图像数据
+//	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+//	glReadPixels(0, 0, povWidth, povWidth, GL_BGR_EXT, GL_UNSIGNED_BYTE, pPixelData);
+//	// 把 whole.bmp 的文件头复制为新文件的文件头
+//	fread(BMP_Header, sizeof(BMP_Header), 1, pDummyFile);
+//	fwrite(BMP_Header, sizeof(BMP_Header), 1, pWritingFile);
+//	fseek(pWritingFile, 0x0012, SEEK_SET);
+//	i = povWidth;
+//	j = povWidth;
+//	fwrite(&i, sizeof(i), 1, pWritingFile);
+//	fwrite(&j, sizeof(j), 1, pWritingFile);
+//	fseek(pWritingFile, 0, SEEK_END);
+//	fwrite(pPixelData, PixelDataLength, 1, pWritingFile);
+//	// 释放内存和关闭文件
+//	fclose(pDummyFile);
+//	fclose(pWritingFile);
+//	free(pPixelData);
+//}
+
+#define BMP_Header_Length 54
+void ModelGL::grabScreen()
+{
+	FILE*    pDummyFile;  //指向另一bmp文件，用于复制它的文件头和信息头数据
+	FILE*    pWritingFile;  //指向要保存截图的bmp文件
+	GLubyte* pPixelData;    //指向新的空的内存，用于保存截图bmp文件数据
+	GLubyte  BMP_Header[BMP_Header_Length];
+	GLint    i, j;
+	GLint    PixelDataLength;   //BMP文件数据总长度
+
+	// 计算像素数据的实际长度
+	i = povWidth * 3;   // 得到每一行的像素数据长度
+	while (i % 4 != 0)      // 补充数据，直到i是的倍数
+		++i;
+	PixelDataLength = i * povWidth;  //补齐后的总位数
+
+	// 分配内存和打开文件
+	pPixelData = (GLubyte*)malloc(PixelDataLength);
+	if (pPixelData == 0)
+		exit(0);
+
+	pDummyFile = fopen("uvtemplate.bmp", "rb");//只读形式打开
+	if (pDummyFile == 0)
+		exit(0);
+
+	pWritingFile = fopen("test.bmp", "wb"); //只写形式打开
+	if (pWritingFile == 0)
+		exit(0);
+
+	//把读入的bmp文件的文件头和信息头数据复制，并修改宽高数据
+	fread(BMP_Header, sizeof(BMP_Header), 1, pDummyFile);  //读取文件头和信息头，占据54字节
+	fwrite(BMP_Header, sizeof(BMP_Header), 1, pWritingFile);
+	fseek(pWritingFile, 0x0012, SEEK_SET); //移动到0X0012处，指向图像宽度所在内存
+	i = povWidth;
+	j = povWidth;
+	fwrite(&i, sizeof(i), 1, pWritingFile);
+	fwrite(&j, sizeof(j), 1, pWritingFile);
+
+	// 读取当前画板上图像的像素数据
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);  //设置4位对齐方式
+	glReadPixels(0, 0, povWidth, povWidth,
+		GL_BGR_EXT, GL_UNSIGNED_BYTE, pPixelData);
+
+	// 写入像素数据
+	fseek(pWritingFile, 0, SEEK_END);
+	//把完整的BMP文件数据写入pWritingFile
+	fwrite(pPixelData, PixelDataLength, 1, pWritingFile);
+
+	// 释放内存和关闭文件
+	fclose(pDummyFile);
+	fclose(pWritingFile);
+	free(pPixelData);
+}

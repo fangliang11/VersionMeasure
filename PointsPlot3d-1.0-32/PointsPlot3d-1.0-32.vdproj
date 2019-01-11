@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_0E6C031C6380453C98AF4322CA63BB48"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_12A0E71A6D7746A8941DC8CAC01BA151"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -27,7 +33,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_7F5F154A35864C73A99B6A2ACCCEB1CA"
+        "MsmKey" = "8:_98A8256C33854EE5807549DDCD8EBD1A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AA679DAD08E0425F80511CB31C16D418"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -53,15 +65,15 @@
             {
             "Enabled" = "11:TRUE"
             "PromptEnabled" = "11:TRUE"
-            "PrerequisitesLocation" = "2:1"
+            "PrerequisitesLocation" = "2:2"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Visual.C++.14.0.x86"
                     {
-                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    "Name" = "8:Visual C++ \"14\" 运行时库(x86)"
+                    "ProductCode" = "8:Microsoft.Visual.C++.14.0.x86"
                     }
                 }
             }
@@ -90,11 +102,6 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
-                    {
-                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 和 x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
-                    }
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Visual.C++.14.0.x86"
                     {
                     "Name" = "8:Visual C++ \"14\" 运行时库(x86)"
@@ -123,6 +130,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0E6C031C6380453C98AF4322CA63BB48"
+            {
+            "SourcePath" = "8:..\\PointsPlot3D\\backimage1.jpg"
+            "TargetName" = "8:backimage1.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_6E68A2F8F88A46AEA96815E4AB141AE6"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_12A0E71A6D7746A8941DC8CAC01BA151"
             {
             "SourcePath" = "8:C:\\Windows\\System32\\msiexec.exe"
@@ -143,10 +170,30 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7F5F154A35864C73A99B6A2ACCCEB1CA"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_98A8256C33854EE5807549DDCD8EBD1A"
             {
-            "SourcePath" = "8:D:\\Users\\fang\\Source\\Repos\\WindowsProject1\\matrixModelView1204\\src\\iftsbig.ico"
+            "SourcePath" = "8:..\\PointsPlot3D\\drawpoints\\iftsbig.ico"
             "TargetName" = "8:iftsbig.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_6E68A2F8F88A46AEA96815E4AB141AE6"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AA679DAD08E0425F80511CB31C16D418"
+            {
+            "SourcePath" = "8:..\\PointsPlot3D\\backimage2.jpg"
+            "TargetName" = "8:backimage2.jpg"
             "Tag" = "8:"
             "Folder" = "8:_6E68A2F8F88A46AEA96815E4AB141AE6"
             "Condition" = "8:"
@@ -173,7 +220,7 @@
             {
             "DefaultLocation" = "8:[ProgramFilesFolder]\\[ProductName]"
             "Name" = "8:#1925"
-            "AlwaysCreate" = "11:FALSE"
+            "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Property" = "8:TARGETDIR"
@@ -206,7 +253,7 @@
             "{1525181F-901A-416C-8A58-119130FE478E}:_9CFA9464E24C4D2485382A0A71867B15"
             {
             "Name" = "8:#1916"
-            "AlwaysCreate" = "11:FALSE"
+            "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Property" = "8:DesktopFolder"
@@ -217,7 +264,7 @@
             "{1525181F-901A-416C-8A58-119130FE478E}:_D23E2E2CD7324E5FAA41D1B7907F956F"
             {
             "Name" = "8:#1919"
-            "AlwaysCreate" = "11:FALSE"
+            "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Property" = "8:ProgramMenuFolder"
@@ -362,18 +409,18 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_0A6D37016E044006B7FED26BEC371339"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_20301E69EC984E4295D9A08993B63649"
             {
-            "Name" = "8:PointsPlot3D"
+            "Name" = "8:PointsPlot3d-1.0-32"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_5D0C19DC7ABA4F87A9CF8D9CF7C12805"
+            "Target" = "8:_9CFA9464E24C4D2485382A0A71867B15"
             "Folder" = "8:_9CFA9464E24C4D2485382A0A71867B15"
-            "WorkingFolder" = "8:_6E68A2F8F88A46AEA96815E4AB141AE6"
-            "Icon" = "8:_7F5F154A35864C73A99B6A2ACCCEB1CA"
+            "WorkingFolder" = "8:_9CFA9464E24C4D2485382A0A71867B15"
+            "Icon" = "8:_98A8256C33854EE5807549DDCD8EBD1A"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_227425A5E35C492DA50B6E86D968F24F"
@@ -390,32 +437,32 @@
             "Icon" = "8:"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2F583A5535794CB59545D2D5C0084E75"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_61C9ECFCB62145A08C580C6AA3E0AB48"
             {
-            "Name" = "8:PointsPlot3D"
+            "Name" = "8:PointsPlot3d-1.0-32"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_5D0C19DC7ABA4F87A9CF8D9CF7C12805"
+            "Target" = "8:_D23E2E2CD7324E5FAA41D1B7907F956F"
             "Folder" = "8:_D23E2E2CD7324E5FAA41D1B7907F956F"
-            "WorkingFolder" = "8:_6E68A2F8F88A46AEA96815E4AB141AE6"
-            "Icon" = "8:_7F5F154A35864C73A99B6A2ACCCEB1CA"
+            "WorkingFolder" = "8:_D23E2E2CD7324E5FAA41D1B7907F956F"
+            "Icon" = "8:_98A8256C33854EE5807549DDCD8EBD1A"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_52E43590C3C8421DB4B2D25B896FEBBD"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8345511D0733429AA73F6ED7CC9A8BA6"
             {
-            "Name" = "8:PointsPlot3D"
+            "Name" = "8:PointsPlot3d-1.0-32"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_5D0C19DC7ABA4F87A9CF8D9CF7C12805"
+            "Target" = "8:_6E68A2F8F88A46AEA96815E4AB141AE6"
             "Folder" = "8:_6E68A2F8F88A46AEA96815E4AB141AE6"
             "WorkingFolder" = "8:_6E68A2F8F88A46AEA96815E4AB141AE6"
-            "Icon" = "8:_7F5F154A35864C73A99B6A2ACCCEB1CA"
+            "Icon" = "8:_98A8256C33854EE5807549DDCD8EBD1A"
             "Feature" = "8:"
             }
         }
