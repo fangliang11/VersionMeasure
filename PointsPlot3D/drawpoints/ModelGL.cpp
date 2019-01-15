@@ -168,10 +168,10 @@ void ModelGL::init()
 
 	// enable/disable features设置特效
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);   //指定颜色和纹理坐标的差值质量 | 选择最高质量选项
-	glEnable(GL_DEPTH_TEST);   //当我们需要绘制透明图片时，就需要关闭它,并且打开混合
-	glEnable(GL_LIGHTING);   //开启和关闭光照计算
+	//glEnable(GL_DEPTH_TEST);   //当我们需要绘制透明图片时，就需要关闭它,并且打开混合
+	//glEnable(GL_LIGHTING);   //开启和关闭光照计算
 
-	glEnable(GL_TEXTURE_2D);  //设置纹理
+	//glEnable(GL_TEXTURE_2D);  //设置纹理
 	//glEnable(GL_CULL_FACE);   //激活面剔除
 	glEnable(GL_BLEND);       //激活混合
 	glEnable(GL_SCISSOR_TEST);  //激活多视口

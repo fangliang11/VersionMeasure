@@ -62,7 +62,9 @@ string ReadData::selectImage() {
 	ofn.lStructSize = sizeof(OPENFILENAME);//结构体大小
 	ofn.hwndOwner = NULL;//拥有着窗口句柄，为NULL表示对话框是非模态的，实际应用中一般都要有这个句柄
 	//ofn.lpstrFilter = TEXT("所有文件\0*.*\0.png/.jpg/.bmp Flie\0*.png;*.jpg;*.bmp\0\0");//设置过滤
-	ofn.lpstrFilter = TEXT(".png/.jpg/.bmp 文件\0*.png;*.jpg;*.bmp\0\0");//设置过滤
+	ofn.lpstrFilter = TEXT("所有文件\0*.*\0.png/.jpg/.bmp 文件\0*.png;*.jpg;*.bmp\0\0");//设置过滤
+
+	//ofn.lpstrFilter = TEXT(".png/.jpg/.bmp 文件\0*.png;*.jpg;*.bmp\0\0");//设置过滤
 
 	ofn.nFilterIndex = 1;//过滤器索引
 	ofn.lpstrFile = strFilename;//接收返回的文件名，注意第一个字符需要为NULL
@@ -123,18 +125,6 @@ bool ReadData::readFile(string filename, int AXES_LEN, int column_num_X, int col
 			}
 		}
 		myfile.close();
-
-
-		//AllocConsole();
-		//freopen("CONOUT$", "w+t", stdout);
-		//freopen("CONIN$", "r+t", stdin);
-		//std::cout << temp[0] << std::endl;
-
-		//if (vec.at(0) == "x,  y,  x1,  y1,   z1,   D_x,   D_y,   D_z,   x2,    y2,    z2,    D_p,   corroef") {
-		//	
-		//	//MessageBox(NULL, TEXT("数据格式错误，请删除表头后重试"), TEXT("错误"), MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
-		//	vec.erase(vec.begin(), vec.begin() + 2);  //跳过表头
-		//}
 
 		ROWNUM = vec.size();
 		for (auto it = vec.begin(); it != vec.end(); it++)
